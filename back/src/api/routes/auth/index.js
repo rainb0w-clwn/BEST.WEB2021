@@ -9,7 +9,7 @@ var {Logger} = require('../../../utlis');
 module.exports = (app) => {
     app.use('/auth', router);
 
-    router.post('/register',
+    router.post('/signup',
         celebrate({
             body: Joi.object({
                 login: Joi.string().required(),
@@ -28,7 +28,7 @@ module.exports = (app) => {
             }
         });
 
-    router.post('/auth',
+    router.post('/signin',
         celebrate({
             body: Joi.object({
                 login: Joi.string().required(),
