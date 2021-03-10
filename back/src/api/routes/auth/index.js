@@ -9,6 +9,36 @@ var {Logger} = require('../../../utlis');
 module.exports = (app) => {
     app.use('/auth', router);
 
+    /**
+     * @swagger
+     * /auth/signup:
+     *   get:
+     *     summary: регистрация
+     *     description: по введенным логину-паролю с проверкой на уникальность логина создается пользователь.
+     *     operationId: signUp
+     *   parameters:
+     *      - in: login
+     *      name: login
+     *      description: Логин
+     *      schema:
+     *          type: string
+     *          example: test@test.ru
+     *      - in: password
+     *      name: password
+     *      description: Пароль
+     *      schema:
+     *          type: string
+     *          example: 12345678
+     *   requestBody:
+     *      content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      token:
+     *                      type: string
+     *                      example: "51872eca5efedcf424db4cf5afd16a9d00ad25b743a034c9c221afc85d18dcd5e4ad6e3f08607550"
+     */
     router.post('/signup',
         celebrate({
             body: Joi.object({

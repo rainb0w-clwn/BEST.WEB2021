@@ -8,7 +8,7 @@ var normalizePort = require('normalize-port');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 module.exports = {
-    port: normalizePort(process.env.PORT),
+    port: normalizePort(process.env.SERVER_PORT),
 
     mongoURL: process.env.MONGODB_URI,
 
