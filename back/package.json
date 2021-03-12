@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node ./src/app.js",
     "dev": "NODE_ENV=development nodemon --watch src src/app.js",
-    "win-dev": "set NODE_ENV=development nodemon --watch src src/app.js"
+    "win-dev": "set NODE_ENV=development nodemon --watch src src/app.js",
+    "db:migrate": "npx sequelize db:migrate",
+    "db:makemigrate": "npx makemigration"
   },
   "dependencies": {
     "argon2": "^0.27.1",
