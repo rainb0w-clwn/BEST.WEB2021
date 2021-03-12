@@ -1,5 +1,5 @@
-var winston = require('winston');
-var config = require('../config');
+const winston = require('winston');
+const config = require('../config');
 
 const transports = [];
 if (process.env.NODE_ENV !== 'development') {

@@ -45,4 +45,7 @@ module.exports = {
     "globals": {
         "process": true,
     },
+    "ignorePatterns": [
+        "src/migrations/*",
+    ],
 };

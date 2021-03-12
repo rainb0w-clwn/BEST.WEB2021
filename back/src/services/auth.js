@@ -1,11 +1,10 @@
-var {randomBytes} = require('crypto');
-var argon2 = require('argon2');
-var Models = require('../models');
-var jwt = require('jsonwebtoken');
-var config = require('../config');
-var {Logger} = require('../utlis');
-// var mongoose = require('mongoose');
-var crypto = require('crypto');
+const {randomBytes} = require('crypto');
+const argon2 = require('argon2');
+const Models = require('../models');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
+const {Logger} = require('../utlis');
+const crypto = require('crypto');
 
 module.exports = class AuthService {
     constructor() {
@@ -183,5 +182,14 @@ module.exports = class AuthService {
     basicDetails(user) {
         const {id, login, email, roles, lastname, firstname} = user;
         return {id, login, email, roles, lastname, firstname};
+    }
+
+    setTokenCookie(res, token) {
+        // create http only cookie with refresh token that expires in 7 days
+        const cookieOptions = {
+            httpOnly: true,
+            expires: new Date(Date.now() + config.accessTokenExp),
+        };
+        res.cookie('refreshToken', token, cookieOptions);
     }
 };

@@ -1,6 +1,6 @@
-var config = require('../../config');
-var jwt = require('express-jwt');
-var {AuthService} = require('../../services');
+const config = require('../../config');
+const jwt = require('express-jwt');
+const {AuthService} = require('../../services');
 
 function getTokenFromHeader(req) {
     if (

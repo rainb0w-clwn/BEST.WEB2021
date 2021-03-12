@@ -1,5 +1,5 @@
-var Models = require('../../models');
-var {Logger} = require('../../utlis');
+const Models = require('../../models');
+const {Logger} = require('../../utlis');
 
 const attachCurrentUser = async (req, res, next) => {
     try {

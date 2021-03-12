@@ -1,7 +1,7 @@
-var loaders = require('./loaders');
-var express = require('express');
+const loaders = require('./loaders');
+const express = require('express');
 const config = require("./config");
-var {Logger} = require('./utlis');
+const {Logger} = require('./utlis');
 
 StartServer();
 

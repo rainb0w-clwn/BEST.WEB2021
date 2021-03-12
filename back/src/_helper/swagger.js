@@ -1,7 +1,7 @@
-var express = require('express');
-var swaggerUi = require('swagger-ui-express');
+const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 
-var YAML = require('yamljs');
+const YAML = require('yamljs');
 
 const app = express.Router();
 const swaggerDocument = YAML.load(__dirname+ '/../swagger.yaml');

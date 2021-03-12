@@ -1,9 +1,9 @@
-var express = require('express');
-var middlewares = require('../../middlewares');
+const express = require('express');
+const middlewares = require('../../middlewares');
 const router = express.Router();
 const Role = require('../../../_helper/role');
 const {Joi, celebrate} = require("celebrate");
-var {AuthService} = require("../../../services");
+const {AuthService} = require("../../../services");
 
 module.exports = (app) => {
     app.use('/user', router);

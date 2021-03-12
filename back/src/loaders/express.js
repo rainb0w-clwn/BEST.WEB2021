@@ -1,10 +1,12 @@
-var express = require("express");
-var cookieParser = require("cookie-parser");
-var routes = require('../api');
-var config = require('../config');
-var swagger = require("../_helper/swagger");
-var useragent = require('express-useragent');
-var requestIp = require('request-ip');
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const routes = require('../api');
+const config = require('../config');
+const swagger = require("../_helper/swagger");
+const useragent = require('express-useragent');
+const requestIp = require('request-ip');
+const {errors} = require('celebrate'); // handle celebrate joi errors
+
 
 module.exports = async ({app}) => {
     app.enable('trust proxy');
@@ -24,6 +26,8 @@ module.exports = async ({app}) => {
     app.use(requestIp.mw());
 
     app.use(config.api.prefix, routes());
+
+    app.use(errors());
 
     app.use((req, res, next) => {
         const err = new Error('Not Found');
