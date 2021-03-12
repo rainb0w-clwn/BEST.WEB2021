@@ -35,7 +35,12 @@ module.exports = (app) => {
         });
 
     router.post('/signin',
-
+        celebrate({
+            body: Joi.object({
+                login: Joi.string().required(),
+                password: Joi.string().required(),
+            }),
+        }),
         async function (req, res, next) {
             const {login, password} = req.body;
             const {ip} = req.clientIp || null;
