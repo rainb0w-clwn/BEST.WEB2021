@@ -1,83 +1,5 @@
 {
     "tables": {
-        "Products": {
-            "tableName": "Products",
-            "schema": {
-                "id": {
-                    "primaryKey": true,
-                    "autoIncrement": true,
-                    "field": "id",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "store_type": {
-                    "allowNull": false,
-                    "field": "store_type",
-                    "seqType": "Sequelize.STRING"
-                },
-                "code": {
-                    "field": "code",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "category": {
-                    "allowNull": false,
-                    "field": "category",
-                    "seqType": "Sequelize.STRING"
-                },
-                "name": {
-                    "allowNull": false,
-                    "field": "name",
-                    "seqType": "Sequelize.STRING"
-                },
-                "price": {
-                    "allowNull": false,
-                    "field": "price",
-                    "seqType": "Sequelize.FLOAT"
-                },
-                "currency": {
-                    "allowNull": false,
-                    "defaultValue": {
-                        "value": "RUR"
-                    },
-                    "field": "currency",
-                    "seqType": "Sequelize.STRING"
-                },
-                "rating": {
-                    "field": "rating",
-                    "seqType": "Sequelize.FLOAT"
-                },
-                "rating_count": {
-                    "defaultValue": {
-                        "value": 0
-                    },
-                    "field": "rating_count",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "url": {
-                    "allowNull": false,
-                    "field": "url",
-                    "seqType": "Sequelize.STRING"
-                },
-                "url_picture": {
-                    "allowNull": false,
-                    "field": "url_picture",
-                    "seqType": "Sequelize.STRING"
-                },
-                "createdAt": {
-                    "defaultValue": {
-                        "internal": true,
-                        "value": "Sequelize.NOW"
-                    },
-                    "field": "createdAt",
-                    "seqType": "Sequelize.DATE"
-                },
-                "updatedAt": {
-                    "allowNull": false,
-                    "field": "updatedAt",
-                    "seqType": "Sequelize.DATE"
-                }
-            },
-            "indexes": []
-        },
         "RefreshTokens": {
             "tableName": "RefreshTokens",
             "schema": {
@@ -225,5 +147,5 @@
             "indexes": []
         }
     },
-    "revision": 2
+    "revision": 1
 }

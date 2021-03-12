@@ -1,10 +1,9 @@
-var express = require('express');
+const express = require('express');
 const {Joi, celebrate} = require("celebrate");
-var {AuthService} = require("../../../services");
-var middlewares = require('../../middlewares');
+const {AuthService} = require("../../../services");
+const middlewares = require('../../middlewares');
 const router = express.Router();
-var {Logger} = require('../../../utlis');
-var config = require('../../../config');
+const {Logger} = require('../../../utlis');
 
 module.exports = (app) => {
     app.use('/auth', router);
@@ -48,7 +47,7 @@ module.exports = (app) => {
             try {
                 const authServiceInstance = new AuthService();
                 const userData = await authServiceInstance.SignIn(login, password, ip, source, browser, os);
-                setTokenCookie(res, userData.refreshToken);
+                authServiceInstance.setTokenCookie(res, userData.refreshToken);
                 return res.status(200).json(userData);
             } catch (e) {
                 Logger.error('🔥 error: %o', e);
@@ -62,7 +61,7 @@ module.exports = (app) => {
         const authServiceInstance = new AuthService();
         authServiceInstance.refreshToken({token, ipAddress})
             .then(({refreshToken, ...user}) => {
-                setTokenCookie(res, refreshToken);
+                authServiceInstance.setTokenCookie(res, refreshToken);
                 res.json(user);
             })
             .catch(next);
@@ -79,14 +78,5 @@ module.exports = (app) => {
                 return next(e);
             }
         });
-
-    function setTokenCookie(res, token) {
-        // create http only cookie with refresh token that expires in 7 days
-        const cookieOptions = {
-            httpOnly: true,
-            expires: new Date(Date.now() + config.accessTokenExp),
-        };
-        res.cookie('refreshToken', token, cookieOptions);
-    }
 };
 

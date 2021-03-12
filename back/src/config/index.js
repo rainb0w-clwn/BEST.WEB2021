@@ -5,7 +5,7 @@ if (envFound.error) {
     throw new Error("⚠️  Couldn't find .env file  ⚠️");
 }
 
-var normalizePort = require('normalize-port');
+const normalizePort = require('normalize-port');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 let dbURI = `postgres://${process.env.DB_USER}:${process.env.DB_PASS}/${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DB}`;

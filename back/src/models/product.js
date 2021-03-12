@@ -1,71 +1,69 @@
 'use strict';
 const {Model} = require('sequelize');
-const Role = require('../_helper/role');
-
+var currency = require('../_helper/product_currency');
 module.exports = (sequelize, DataTypes) => {
-    class User extends Model {
+    class Product extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            this.hasMany(models.RefreshToken, {
-                foreignKey: {
-                    name: 'user_id',
-                },
-            });
+            // define association here
         }
     }
-
-    User.init({
+    Product.init({
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        login: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-            validate: {
-                isEmail: true,
-            },
-        },
-        password: {
+        store_type: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        salt: {
+        code: {
+            type: DataTypes.INTEGER,
+        },
+        category: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        lastname: {
+        name: {
             type: DataTypes.STRING,
+            allowNull: false,
         },
-        firstname: {
+        price: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        },
+        currency: {
             type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: currency.RUR,
         },
-        roles: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            defaultValue: [Role.User],
+        rating: {
+            type: DataTypes.FLOAT,
+        },
+        rating_count: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+        },
+        url: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        url_picture: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         createdAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        updatedAt: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
-        },
     }, {
         sequelize,
-        modelName: 'User',
+        modelName: 'Product',
     });
-    return User;
+    return Product;
 };
