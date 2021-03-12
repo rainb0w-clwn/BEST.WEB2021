@@ -10,7 +10,48 @@ module.exports = (app) => {
 
     router.get('/',
         async function (req, res, next) {
+            try { //YAUUUUU pometka
+
+                return res.status(200).end();
+            } catch (e) {
+                Logger.error('🔥 error: %o', e);
+                return next(e);
+            }
+
+        });
+    router.get('/favorite/',
+       // 
+        async function (req, res, next) {
+
+            try { //YAUUUUU pometka
+                return res.status(200).end();
+            } catch (e) {
+                Logger.error('🔥 error: %o', e);
+                return next(e);
+            }
+        });
+    router.post('/favorite/:id',
+        middlewares.isAuth(),
+        middlewares.attachCurrentUser,
+        async function (req, res) {
+           
+            try { //YAUUUUU pometka
+                return res.status(200).end();
+            } catch (e) {
+                Logger.error('🔥 error: %o', e);
+            }
+        });
+
+    router.delete('/favorite/:id',
+        middlewares.isAuth(),
+        middlewares.attachCurrentUser,
+        async function (req, res) {
+
+            try { //YAUUUUU pometka
+                return res.status(200).end();
+            } catch (e) {
+                Logger.error('🔥 error: %o', e);
+            }
         });
 
 };
-
