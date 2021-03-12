@@ -4,30 +4,47 @@ var Models = require('../models');
 var jwt = require('jsonwebtoken');
 var config = require('../config');
 var {Logger} = require('../utlis');
-
+// var mongoose = require('mongoose');
+var crypto = require('crypto');
 
 module.exports = class AuthService {
     constructor() {
-        this.userModel = Models.UserModel;
+        this.userModel = Models.User;
         this.logger = Logger;
     }
 
-    async SignUp(login, password) {
+    async SignUp(login, password, ip, user_agent, browser, os, email, lastname, firstname) {
         try {
             const salt = randomBytes(32);
             const hashedPassword = await argon2.hash(password, {salt});
             this.logger.silly('Creating user db record');
             const userRecord = await this.userModel.create({
                 login: login,
+                email: email,
                 password: hashedPassword,
                 salt: salt.toString('hex'),
+                lastname: lastname || null,
+                firstname: firstname || null,
             });
-            const token = this.generateToken(userRecord);
             if (!userRecord) {
                 throw Error('Error registering new user please try again');
             }
-            const user = userRecord.toObject();
-            return {user, token};
+            let user = userRecord.toJSON();
+            Reflect.deleteProperty(user, 'password');
+            Reflect.deleteProperty(user, 'salt');
+            Reflect.deleteProperty(user, 'createdAt');
+            Reflect.deleteProperty(user, 'updatedAt');
+
+            const token = this.generateJWT(userRecord);
+
+            //generate and save refreshToken
+            const refreshToken = await this.generateRefreshToken(user, ip, user_agent, browser, os);
+
+            return {
+                ...this.basicDetails(user),
+                token,
+                refreshToken: refreshToken.token,
+            };
         } catch (e) {
             this.logger.error(e);
             throw e;
@@ -35,38 +52,136 @@ module.exports = class AuthService {
 
     }
 
-    async SignIn(login, password) {
-        const userRecord = await this.userModel.findOne({login: login});
-        if (!userRecord) {
-            throw new Error('User not registered');
+    async SignIn(login, password, ip, user_agent, browser, os) {
+        const userRecord = await this.userModel.findOne({where: {login: login}});
+        if (userRecord === null) {
+            throw new Error('Login or password is incorrect');
         }
         const validPassword = await argon2.verify(userRecord.password, password);
-        if (validPassword) {
-            this.logger.silly('Password is valid!');
-            const token = this.generateToken(userRecord);
-            const user = userRecord.toObject();
-            return {user, token};
-        } else {
-            throw new Error('Invalid Password');
+        if (!validPassword) {
+            throw new Error('Login or password is incorrect');
         }
+        let user = userRecord.toJSON();
+        Reflect.deleteProperty(user, 'password');
+        Reflect.deleteProperty(user, 'salt');
+        Reflect.deleteProperty(user, 'createdAt');
+        Reflect.deleteProperty(user, 'updatedAt');
+
+        const token = this.generateJWT(userRecord);
+        const refreshToken = await this.generateRefreshToken(user, ip, user_agent, browser, os);
+
+        return {
+            ...this.basicDetails(user),
+            token,
+            refreshToken: refreshToken.token,
+        };
     }
 
-    generateToken(user) {
-        const today = new Date();
-        const exp = new Date(today);
-        exp.setDate(today.getDate() + 60);
+    async refreshToken({token, ipAddress}) {
+        const refreshToken = await this.getRefreshToken(token);
+        const {user} = refreshToken;
 
+        // replace old refresh token with a new one and save
+        const newRefreshToken = this.generateRefreshToken(user, ipAddress);
+        refreshToken.revoked = Date.now();
+        refreshToken.revokedByIp = ipAddress;
+        refreshToken.replacedByToken = newRefreshToken.token;
+        await refreshToken.save();
+        await newRefreshToken.save();
+
+        // generate new jwt
+        const jwtToken = this.generateJWT(user);
+
+        // return basic details and tokens
+        return {
+            ...this.basicDetails(user),
+            jwtToken,
+            refreshToken: newRefreshToken.token,
+        };
+    }
+
+    async revokeToken({token, ipAddress}) {
+        const refreshToken = await this.getRefreshToken(token);
+
+        // revoke token and save
+        refreshToken.revoked = Date.now();
+        refreshToken.revokedByIp = ipAddress;
+        await refreshToken.save();
+    }
+
+    async getAll() {
+        const users = await Models.User.findAll();
+        return users.map(x => this.basicDetails(x));
+    }
+
+    async getById(id) {
+        const user = await this.getUser(id);
+        return this.basicDetails(user);
+    }
+
+    async getRefreshToken(token) {
+        const refreshToken = await Models.RefreshToken.findOne({token}).populate('user');
+        if (!refreshToken || !refreshToken.isActive) {
+            throw 'Invalid token';
+        }
+        return refreshToken;
+    }
+
+    async getRefreshTokens(userId) {
+        // check that user exists
+        // if (check) {
+        //     await this.getUser(userId);
+        // }
+
+        // return refresh tokens for user
+        return Models.RefreshToken.findAll({where: {user_id: userId}});
+    }
+
+    async getUser(id) {
+        const user = await Models.User.findByPk(id);
+        if (!user) {
+            throw 'User not found';
+        }
+        return user;
+    }
+
+    generateJWT(user) {
         return jwt.sign(
             {
                 id: user.id, // We are gonna use this in the middleware 'isAuth'
-                role: user.role,
-                name: user.login,
-                exp: exp.getTime() / 1000,
+                roles: user.roles,
+                login: user.login,
+                email: user.email,
+                lastname: user.lastname,
+                firstname: user.firstname,
             },
             config.jwtSecret,
             {
+                expiresIn: config.jwtExp,
                 algorithm: config.jwtAlgo,
             },
         );
+    }
+
+    async generateRefreshToken(user, ip, user_agent, browser, os) {
+        // create a refresh token that expires in 7 days
+        return await Models.RefreshToken.create({
+            user_id: user.id,
+            ip: ip,
+            os: os,
+            browser: browser,
+            user_agent: user_agent,
+            token: this.randomTokenString(),
+            expiredAt: new Date(Date.now() + config.accessTokenExp),
+        });
+    }
+
+    randomTokenString() {
+        return crypto.randomBytes(40).toString('hex');
+    }
+
+    basicDetails(user) {
+        const {id, login, email, roles, lastname, firstname} = user;
+        return {id, login, email, roles, lastname, firstname};
     }
 };

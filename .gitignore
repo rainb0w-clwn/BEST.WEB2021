@@ -7,3 +7,4 @@ node_modules/
 /.idea
 front/dist/
 front/dist
+.env

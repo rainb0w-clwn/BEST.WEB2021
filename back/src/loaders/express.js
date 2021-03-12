@@ -3,6 +3,8 @@ var cookieParser = require("cookie-parser");
 var routes = require('../api');
 var config = require('../config');
 var swagger = require("../_helper/swagger");
+var useragent = require('express-useragent');
+var requestIp = require('request-ip');
 
 module.exports = async ({app}) => {
     app.enable('trust proxy');
@@ -11,13 +13,16 @@ module.exports = async ({app}) => {
     app.use(express.urlencoded({extended: false}));
     app.use(cookieParser());
 
-
     if (process.env.NODE_ENV === 'development') {
         app.use(
             "/api-docs",
             swagger,
         );
     }
+
+    app.use(useragent.express());
+    app.use(requestIp.mw());
+
     app.use(config.api.prefix, routes());
 
     app.use((req, res, next) => {
