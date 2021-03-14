@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            this.hasMany(models.FavoriteProduct, {
+                foreignKey: {
+                    name: 'product_id',
+                },
+            });
         }
     }
     Product.init({
@@ -19,18 +24,18 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
         },
         store_type: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         code: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
         },
         category: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         name: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         price: {
@@ -50,16 +55,21 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0,
         },
         url: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         url_picture: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         createdAt: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+            defaultValue: sequelize.fn('NOW'),
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: sequelize.fn('NOW'),
+            onUpdate : sequelize.literal('CURRENT_TIMESTAMP'),
         },
     }, {
         sequelize,

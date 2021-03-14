@@ -1,7 +1,7 @@
 var Models = require('../models');
 // var config = require('../config');
 var {Logger} = require('../utlis');
-const {Op} = require("sequelize");
+const {Op, DataTypes} = require("sequelize");
 
 module.exports = class ProductService {
     constructor() {
@@ -11,19 +11,41 @@ module.exports = class ProductService {
 
     async getProducts(params) {
         let query = this.getQuery(params);
-        return await Models.Product.findAll(query);
+        return Models.Product.findAll(query);
+    }
+
+    async getFavorite(userId) {
+        let favorite = await Models.FavoriteProduct.findAll({where: {user_id: userId, blocked: false}});
+        return favorite;
+    }
+
+    async setFavorite(userId, productId) {
+        let favorite = await Models.FavoriteProduct.findOrCreate({where: {user_id: userId, product_id: productId, blocked: false}});
+        return favorite;
+
+    }
+
+    async deleteFavorite(userId, productId) {
+        let result = await Models.FavoriteProduct.update({blocked: true}, {
+            where: {
+                user_id: userId,
+                product_id: productId,
+                blocked: false,
+            },
+        });
+        return result;
     }
 
     getQuery(params) {
-        let {name, category, store_type, rating, priceFrom, priceTo, sortBy, offset} = params;
+        let {name, category, store_type, rating, priceFrom, priceTo, sortBy, offset, limit} = params;
         let data = {
             order: [],
         };
-        console.log(params);
+        // console.log(params);
         let sortByAllow = ['price', 'rating'];
         let whereCondition = {};
         if (name != null) {
-            whereCondition[Op.or] = [{name: {[Op.iLike]: name}}, {category: {[Op.iLike]: name}}];
+            whereCondition[Op.or] = [{name: {[Op.iLike]: '%'+name+'%'}}, {category: {[Op.iLike]: '%'+name+'%'}}];
             let escapedName = Models.sequelize.escape(`%${name}%`);
             data.order.push(Models.sequelize.literal(`name ILIKE ${escapedName} OR NULL`));
             data.order.push(Models.sequelize.literal(`category ILIKE ${escapedName} OR NULL`));
@@ -51,6 +73,7 @@ module.exports = class ProductService {
             });
         }
         offset != null ? data.offset = offset : null;
+        limit != null && limit <= 500 ? data.limit = limit : 100;
 
         whereCondition != null ? data.where = whereCondition : null;
         return data;

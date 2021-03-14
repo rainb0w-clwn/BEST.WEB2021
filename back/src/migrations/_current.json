@@ -1,5 +1,68 @@
 {
     "tables": {
+        "FavoriteProducts": {
+            "tableName": "FavoriteProducts",
+            "schema": {
+                "id": {
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "product_id": {
+                    "allowNull": false,
+                    "field": "product_id",
+                    "name": "product_id",
+                    "references": {
+                        "model": "Products",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "user_id": {
+                    "allowNull": false,
+                    "field": "user_id",
+                    "name": "user_id",
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "blocked": {
+                    "allowNull": null,
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "blocked",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "createdAt": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "Sequelize.fn(\"NOW\")"
+                    },
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "Sequelize.fn(\"NOW\")"
+                    },
+                    "onUpdate": {
+                        "val": "CURRENT_TIMESTAMP"
+                    },
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
         "Products": {
             "tableName": "Products",
             "schema": {
@@ -12,21 +75,21 @@
                 "store_type": {
                     "allowNull": false,
                     "field": "store_type",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "code": {
                     "field": "code",
-                    "seqType": "Sequelize.INTEGER"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "category": {
                     "allowNull": false,
                     "field": "category",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "name": {
                     "allowNull": false,
                     "field": "name",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "price": {
                     "allowNull": false,
@@ -55,23 +118,29 @@
                 "url": {
                     "allowNull": false,
                     "field": "url",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "url_picture": {
                     "allowNull": false,
                     "field": "url_picture",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "createdAt": {
                     "defaultValue": {
                         "internal": true,
-                        "value": "Sequelize.NOW"
+                        "value": "Sequelize.fn(\"NOW\")"
                     },
                     "field": "createdAt",
                     "seqType": "Sequelize.DATE"
                 },
                 "updatedAt": {
-                    "allowNull": false,
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "Sequelize.fn(\"NOW\")"
+                    },
+                    "onUpdate": {
+                        "val": "CURRENT_TIMESTAMP"
+                    },
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
                 }
@@ -128,7 +197,7 @@
                 "createdAt": {
                     "defaultValue": {
                         "internal": true,
-                        "value": "Sequelize.NOW"
+                        "value": "Sequelize.fn(\"NOW\")"
                     },
                     "field": "createdAt",
                     "seqType": "Sequelize.DATE"
@@ -136,21 +205,13 @@
                 "updatedAt": {
                     "defaultValue": {
                         "internal": true,
-                        "value": "Sequelize.NOW"
+                        "value": "Sequelize.fn(\"NOW\")"
+                    },
+                    "onUpdate": {
+                        "val": "CURRENT_TIMESTAMP"
                     },
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
-                },
-                "UserId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "Users",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "UserId",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -208,7 +269,7 @@
                 "createdAt": {
                     "defaultValue": {
                         "internal": true,
-                        "value": "Sequelize.NOW"
+                        "value": "Sequelize.fn(\"NOW\")"
                     },
                     "field": "createdAt",
                     "seqType": "Sequelize.DATE"
@@ -216,7 +277,10 @@
                 "updatedAt": {
                     "defaultValue": {
                         "internal": true,
-                        "value": "Sequelize.NOW"
+                        "value": "Sequelize.fn(\"NOW\")"
+                    },
+                    "onUpdate": {
+                        "val": "CURRENT_TIMESTAMP"
                     },
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
@@ -225,5 +289,5 @@
             "indexes": []
         }
     },
-    "revision": 2
+    "revision": 5
 }

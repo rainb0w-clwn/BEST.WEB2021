@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const {Joi, celebrate} = require("celebrate");
 const middlewares = require('../../middlewares');
-const {Logger} = require('../../../utlis');
 const {Product} = require('../../../services');
 
 module.exports = (app) => {
@@ -22,50 +21,69 @@ module.exports = (app) => {
                     rating: Joi.string().valid(...['asc', 'ASC', 'desc', 'DESC']),
                 }),
                 offset: Joi.number().integer(),
+                limit: Joi.number().integer(),
             }),
         }),
-        async function (req, res) {
+        async function (req, res, next) {
             try {
                 let productInstance = new Product();
                 let result = await productInstance.getProducts(req.query);
-                return res.status(200).send(result);
+                return res.status(200).json(result);
             } catch (e) {
-                Logger.error('error: %o', e);
-                res.status(500);
+                next(e);
             }
-
         });
     router.get('/favorite',
-       // 
-        async function (req, res) {
-            try { //YAUUUUU pometka
-                return res.status(200).end();
-            } catch (e) {
-                Logger.error('error: %o', e);
-                res.status(500);
-            }
-        });
-    router.post('/favorite/:id',
         middlewares.isAuth(),
         middlewares.attachCurrentUser,
-        async function (req, res) {
-            try { //YAUUUUU pometka
-                return res.status(200).end();
+        async function (req, res, next) {
+            try {
+                let productInstance = new Product();
+                let result = await productInstance.getFavorite(req.currentUser.id);
+                return res.status(200).json(result);
             } catch (e) {
-                Logger.error('error: %o', e);
-                res.status(500);
+                next(e);
             }
+        });
+    router.post('/favorite/:productId',
+        middlewares.isAuth(),
+        middlewares.attachCurrentUser,
+        celebrate({
+            params: Joi.object({
+                productId: Joi.number().integer().required(),
+            }),
+        }),
+        async function (req, res, next) {
+            try {
+                let productInstance = new Product();
+                let result = await productInstance.setFavorite(req.currentUser.id, req.params.productId);
+                let created = result[1];
+                let status = 200;
+                if (created === true) {
+                    status = 201;
+                }
+                return res.status(status).json({statusCode: status, message: "OK"});
+            } catch (e) {
+                next(e);
+            }
+
         });
 
-    router.delete('/favorite/:id',
+    router.delete('/favorite/:productId',
         middlewares.isAuth(),
         middlewares.attachCurrentUser,
-        async function (req, res) {
-            try { //YAUUUUU pometka
-                return res.status(200).end();
+        celebrate({
+            params: Joi.object({
+                productId: Joi.number().integer().required(),
+            }),
+        }),
+        async function (req, res, next) {
+            try {
+                let productInstance = new Product();
+                await productInstance.deleteFavorite(req.currentUser.id, req.params.productId);
+                return res.status(200).json({statusCode: 200, message: "OK"});
             } catch (e) {
-                Logger.error('error: %o', e);
-                res.status(500);
+                next(e);
             }
         });
 

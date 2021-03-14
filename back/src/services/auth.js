@@ -4,6 +4,7 @@ const Models = require('../models');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const {Logger} = require('../utlis');
+const {Op} = require('sequelize');
 const crypto = require('crypto');
 
 module.exports = class AuthService {
@@ -13,52 +14,57 @@ module.exports = class AuthService {
     }
 
     async SignUp(login, password, ip, user_agent, browser, os, email, lastname, firstname) {
-        try {
-            const salt = randomBytes(32);
-            const hashedPassword = await argon2.hash(password, {salt});
-            this.logger.silly('Creating user db record');
-            const userRecord = await this.userModel.create({
-                login: login,
-                email: email,
-                password: hashedPassword,
-                salt: salt.toString('hex'),
-                lastname: lastname || null,
-                firstname: firstname || null,
-            });
-            if (!userRecord) {
-                throw Error('Error registering new user please try again');
-            }
-            let user = userRecord.toJSON();
-            Reflect.deleteProperty(user, 'password');
-            Reflect.deleteProperty(user, 'salt');
-            Reflect.deleteProperty(user, 'createdAt');
-            Reflect.deleteProperty(user, 'updatedAt');
-
-            const token = this.generateJWT(userRecord);
-
-            //generate and save refreshToken
-            const refreshToken = await this.generateRefreshToken(user, ip, user_agent, browser, os);
-
-            return {
-                ...this.basicDetails(user),
-                token,
-                refreshToken: refreshToken.token,
-            };
-        } catch (e) {
-            this.logger.error(e);
+        let userExists = await this.userModel.findOne({where: {[Op.or]: {login: login, email: email}}});
+        if (userExists != null) {
+            let e = Error('User with such login/email already exists');
+            e.name = "UserAlreadyExists";
             throw e;
         }
+        const salt = randomBytes(32);
+        const hashedPassword = await argon2.hash(password, {salt});
+        this.logger.silly('Creating user db record');
+        const userRecord = await this.userModel.create({
+            login: login,
+            email: email,
+            password: hashedPassword,
+            salt: salt.toString('hex'),
+            lastname: lastname || null,
+            firstname: firstname || null,
+        });
+        if (!userRecord) {
+            throw Error('Error registering new user please try again');
+        }
+        let user = userRecord.toJSON();
+        Reflect.deleteProperty(user, 'password');
+        Reflect.deleteProperty(user, 'salt');
+        Reflect.deleteProperty(user, 'createdAt');
+        Reflect.deleteProperty(user, 'updatedAt');
+
+        const token = this.generateJWT(userRecord);
+
+        //generate and save refreshToken
+        const refreshToken = await this.generateRefreshToken(user, ip, user_agent, browser, os);
+
+        return {
+            ...this.basicDetails(user),
+            token,
+            refreshToken: refreshToken.token,
+        };
 
     }
 
     async SignIn(login, password, ip, user_agent, browser, os) {
         const userRecord = await this.userModel.findOne({where: {login: login}});
         if (userRecord === null) {
-            throw new Error('Login or password is incorrect');
+            let e = new Error('Login or password is incorrect');
+            e.name = 'Unauthorized';
+            throw e;
         }
         const validPassword = await argon2.verify(userRecord.password, password);
         if (!validPassword) {
-            throw new Error('Login or password is incorrect');
+            let e = new Error('Login or password is incorrect');
+            e.name = 'Unauthorized';
+            throw e;
         }
         let user = userRecord.toJSON();
         Reflect.deleteProperty(user, 'password');

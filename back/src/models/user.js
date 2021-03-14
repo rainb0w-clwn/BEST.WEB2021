@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
                     name: 'user_id',
                 },
             });
+            this.hasMany(models.FavoriteProduct, {
+                foreignKey: {
+                    name: 'user_id',
+                },
+            });
         }
     }
 
@@ -53,15 +58,16 @@ module.exports = (sequelize, DataTypes) => {
         },
         roles: {
             type: DataTypes.ARRAY(DataTypes.STRING),
-            defaultValue: [Role.User],
+            defaultValue: Array(Role.User),
         },
         createdAt: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+            defaultValue: sequelize.fn('NOW'),
         },
         updatedAt: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+            defaultValue: sequelize.fn('NOW'),
+            onUpdate : sequelize.literal('CURRENT_TIMESTAMP'),
         },
     }, {
         sequelize,

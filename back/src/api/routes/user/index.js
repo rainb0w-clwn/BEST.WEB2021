@@ -53,13 +53,8 @@ module.exports = (app) => {
                 id: Joi.number().required(),
             }),
         }),
-        middlewares.isAuth(),
-        middlewares.attachCurrentUser,
+        middlewares.isAuth(Role.Admin),
         async function (req, res, next) {
-            // regular users can get their own record and admins can get any record
-            if (req.params.id !== req.currentUser.id && !req.currentUser.roles.includes(Role.Admin)) {
-                return res.status(401).json({message: 'Unauthorized'});
-            }
             const authServiceInstance = new AuthService();
             authServiceInstance.getById(req.params.id)
                 .then(user => user ? res.json(user) : res.sendStatus(404))
