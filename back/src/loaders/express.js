@@ -7,7 +7,7 @@ const useragent = require('express-useragent');
 const requestIp = require('request-ip');
 const {errors} = require('celebrate'); // handle celebrate joi errors
 const {Logger} = require('../utlis');
-
+var cors = require('cors')
 
 module.exports = async ({app}) => {
     app.enable('trust proxy');
@@ -26,6 +26,7 @@ module.exports = async ({app}) => {
     app.use(useragent.express());
     app.use(requestIp.mw());
 
+    app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
     app.use(config.api.prefix, routes());
 
     app.use(errors());

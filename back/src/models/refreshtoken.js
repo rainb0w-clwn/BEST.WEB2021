@@ -9,7 +9,11 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-
+            this.belongsTo(models.User, {
+                foreignKey: {
+                    name: 'user_id',
+                },
+            });
         }
     }
     RefreshToken.init({
@@ -18,6 +22,11 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true,
         },
+        // uuid: {
+        //     type: DataTypes.UUID,
+        //     defaultValue: DataTypes.UUIDV4,
+        //     allowNull: false,
+        // },
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,

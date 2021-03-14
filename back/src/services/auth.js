@@ -16,7 +16,7 @@ module.exports = class AuthService {
     async SignUp(login, password, ip, user_agent, browser, os, email, lastname, firstname) {
         let userExists = await this.userModel.findOne({where: {[Op.or]: {login: login, email: email}}});
         if (userExists != null) {
-            let e = Error('User with such login/email already exists');
+            let e = Error('User with such Login/email already exists');
             e.name = "UserAlreadyExists";
             throw e;
         }
@@ -43,7 +43,7 @@ module.exports = class AuthService {
         const token = this.generateJWT(userRecord);
 
         //generate and save refreshToken
-        const refreshToken = await this.generateRefreshToken(user, ip, user_agent, browser, os);
+        const refreshToken = await this.generateRefreshToken(user.id, ip, user_agent, browser, os);
 
         return {
             ...this.basicDetails(user),
@@ -73,7 +73,7 @@ module.exports = class AuthService {
         Reflect.deleteProperty(user, 'updatedAt');
 
         const token = this.generateJWT(userRecord);
-        const refreshToken = await this.generateRefreshToken(user, ip, user_agent, browser, os);
+        const refreshToken = await this.generateRefreshToken(user.id, ip, user_agent, browser, os);
 
         return {
             ...this.basicDetails(user),
@@ -82,36 +82,35 @@ module.exports = class AuthService {
         };
     }
 
-    async refreshToken({token, ipAddress}) {
-        const refreshToken = await this.getRefreshToken(token);
-        const {user} = refreshToken;
+    async refreshToken(tokenInput, ip, user_agent, browser, os) {
+        const refreshToken = await this.getRefreshToken(tokenInput);
+        let oldToken = refreshToken.toJSON();
+
+        await refreshToken.destroy();
+        await this.checkOldToken(oldToken);
 
         // replace old refresh token with a new one and save
-        const newRefreshToken = this.generateRefreshToken(user, ipAddress);
-        refreshToken.revoked = Date.now();
-        refreshToken.revokedByIp = ipAddress;
-        refreshToken.replacedByToken = newRefreshToken.token;
-        await refreshToken.save();
-        await newRefreshToken.save();
-
+        const newRefreshToken = await this.generateRefreshToken(oldToken.User.id, ip, user_agent, browser, os);
         // generate new jwt
-        const jwtToken = this.generateJWT(user);
-
+        const newToken = newRefreshToken.token;
+        const token = await this.generateJWT(oldToken.User);
         // return basic details and tokens
         return {
-            ...this.basicDetails(user),
-            jwtToken,
-            refreshToken: newRefreshToken.token,
+            newToken,
+            ...this.basicDetails(oldToken.User),
+            token,
         };
     }
 
-    async revokeToken({token, ipAddress}) {
-        const refreshToken = await this.getRefreshToken(token);
+    async checkOldToken(oldToken) {
+        if (oldToken.expiredAt <= Date.now()) {
+            throw Error('Refresh Token has been expired!');
+        }
+    }
 
-        // revoke token and save
-        refreshToken.revoked = Date.now();
-        refreshToken.revokedByIp = ipAddress;
-        await refreshToken.save();
+    async revokeToken(tokenInput) {
+        const refreshToken = await this.getRefreshToken(tokenInput);
+        await refreshToken.destroy();
     }
 
     async getAll() {
@@ -125,9 +124,12 @@ module.exports = class AuthService {
     }
 
     async getRefreshToken(token) {
-        const refreshToken = await Models.RefreshToken.findOne({token}).populate('user');
-        if (!refreshToken || !refreshToken.isActive) {
-            throw 'Invalid token';
+        // console.log(Models.RefreshToken.has)
+        const refreshToken = await Models.RefreshToken.findOne({where: {token: token}, include: [Models.User]});
+        if (!refreshToken) {
+            let e = new Error('Неверные данные токена');
+            e.name = 'Unauthorized';
+            throw e;
         }
         return refreshToken;
     }
@@ -168,10 +170,10 @@ module.exports = class AuthService {
         );
     }
 
-    async generateRefreshToken(user, ip, user_agent, browser, os) {
+    async generateRefreshToken(user_id, ip, user_agent, browser, os) {
         // create a refresh token that expires in 7 days
         return await Models.RefreshToken.create({
-            user_id: user.id,
+            user_id: user_id,
             ip: ip,
             os: os,
             browser: browser,

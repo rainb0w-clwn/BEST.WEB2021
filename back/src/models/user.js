@@ -10,16 +10,16 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            this.hasMany(models.RefreshToken, {
-                foreignKey: {
-                    name: 'user_id',
-                },
-            });
-            this.hasMany(models.FavoriteProduct, {
-                foreignKey: {
-                    name: 'user_id',
-                },
-            });
+            // User.hasMany(models.RefreshToken, {
+            //     foreignKey: {
+            //         name: 'user_id',
+            //     },
+            // });
+            // User.hasMany(models.FavoriteProduct, {
+            //     foreignKey: {
+            //         name: 'user_id',
+            //     },
+            // });
         }
     }
 

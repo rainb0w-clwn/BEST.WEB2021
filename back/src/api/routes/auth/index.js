@@ -54,26 +54,41 @@ module.exports = (app) => {
             }
         });
 
-    router.post('/refresh-token', async function (req, res, next) {
-        const token = req.cookies.refreshToken;
-        const ipAddress = req.ip;
-        const authServiceInstance = new AuthService();
-        authServiceInstance.refreshToken({token, ipAddress})
-            .then(({refreshToken, ...user}) => {
-                authServiceInstance.setTokenCookie(res, refreshToken);
-                res.json(user);
-            })
-            .catch(next);
-    });
+    router.post('/update-token',
+        celebrate({
+            cookies: Joi.object({
+                refreshToken: Joi.string().length(80).required(),
+            }),
+        }),
+        async function (req, res, next) {
+            const token = req.cookies.refreshToken;
+            const {ip} = req.clientIp || null;
+            const {source, browser, os} = req.useragent;
+            const authServiceInstance = new AuthService();
+            authServiceInstance.refreshToken(token, ip, source, browser, os)
+                .then(({newToken, ...user}) => {
+                    authServiceInstance.setTokenCookie(res, newToken);
+                    res.json(user);
+                })
+                .catch(next);
+        });
 
     router.post('/logout',
+        celebrate({
+            cookies: Joi.object({
+                refreshToken: Joi.string().length(80).required(),
+            }),
+        }),
         middlewares.isAuth,
         async function (req, res, next) {
             try {
-                //@TODO AuthService.Logout(req.user) do some clever stuff
-                return res.status(200).end();
+                const token = req.cookies.refreshToken;
+                const authServiceInstance = new AuthService();
+                await authServiceInstance.revokeToken(token);
+                res.clearCookie('refreshToken');
+                return res.status(200).json({message: 'OK', statusCode: 200});
             } catch (e) {
-                res.status(500);
+                next(e);
             }
         });
 };

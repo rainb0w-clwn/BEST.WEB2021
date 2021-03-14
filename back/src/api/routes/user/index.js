@@ -12,30 +12,25 @@ module.exports = (app) => {
         return res.json({user: req.currentUser}).status(200);
     });
 
-    router.post('/revoke-token', middlewares.isAuth(),
-        celebrate({
-            body: Joi.object({
-                token: Joi.string().empty(''),
-            }),
-        }),
-        async function (req, res, next) {
-            // accept token from request body or cookie
-            const token = req.body.token || req.cookies.refreshToken;
-            const ipAddress = req.ip;
-
-            if (!token) {
-                return res.status(400).json({message: 'Token is required'});
-            }
-
-            // users can revoke their own tokens and admins can revoke any tokens
-            if (!req.token && req.user.role !== Role.Admin) {
-                return res.status(401).json({message: 'Unauthorized'});
-            }
-            const authServiceInstance = new AuthService();
-            authServiceInstance.revokeToken({token, ipAddress})
-                .then(() => res.json({message: 'Token revoked'}))
-                .catch(next);
-        });
+    // router.post('/revoke-token', middlewares.isAuth(),
+    //     celebrate({
+    //         cookies: Joi.object({
+    //             refreshToken: Joi.string().length(80).required(),
+    //         }),
+    //     }),
+    //     async function (req, res, next) {
+    //         // accept token from request body or cookie
+    //         const token = req.cookies.refreshToken;
+    //
+    //         // users can revoke their own tokens and admins can revoke any tokens
+    //         if (!req.token && req.user.role !== Role.Admin) {
+    //             return res.status(401).json({message: 'Unauthorized'});
+    //         }
+    //         const authServiceInstance = new AuthService();
+    //         authServiceInstance.revokeToken({token, ipAddress})
+    //             .then(() => res.json({message: 'Token revoked'}))
+    //             .catch(next);
+    //     });
 
     router.get('/',
         middlewares.isAuth(Role.Admin),

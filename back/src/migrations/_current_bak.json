@@ -79,7 +79,7 @@
                 },
                 "code": {
                     "field": "code",
-                    "seqType": "Sequelize.BIGINT"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "category": {
                     "allowNull": false,
@@ -289,5 +289,5 @@
             "indexes": []
         }
     },
-    "revision": 4
+    "revision": 7
 }
