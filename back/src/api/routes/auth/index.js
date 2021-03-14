@@ -26,10 +26,10 @@ module.exports = (app) => {
             try {
                 const authServiceInstance = new AuthService();
                 const userData = await authServiceInstance.SignUp(login, password, ip, source, browser, os, email, lastname, firstname);
+                authServiceInstance.setTokenCookie(res, userData.refreshToken);
                 return res.status(201).json(userData);
             } catch (e) {
-                Logger.error('🔥 error: %o', e);
-                return next(e);
+                next(e);
             }
         });
 
@@ -50,8 +50,7 @@ module.exports = (app) => {
                 authServiceInstance.setTokenCookie(res, userData.refreshToken);
                 return res.status(200).json(userData);
             } catch (e) {
-                Logger.error('🔥 error: %o', e);
-                return next(e);
+                next(e);
             }
         });
 
@@ -74,8 +73,7 @@ module.exports = (app) => {
                 //@TODO AuthService.Logout(req.user) do some clever stuff
                 return res.status(200).end();
             } catch (e) {
-                Logger.error('🔥 error: %o', e);
-                return next(e);
+                res.status(500);
             }
         });
 };

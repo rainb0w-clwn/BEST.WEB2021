@@ -9,7 +9,6 @@ const attachCurrentUser = async (req, res, next) => {
             return res.sendStatus(401);
         }
         let user = userRecord.toJSON();
-        console.log(user);
         Reflect.deleteProperty(user, 'password');
         Reflect.deleteProperty(user, 'salt');
         Reflect.deleteProperty(user, 'createdAt');

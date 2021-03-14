@@ -6,8 +6,9 @@
     "start": "node ./src/app.js",
     "dev": "NODE_ENV=development nodemon --watch src src/app.js",
     "win-dev": "set NODE_ENV=development nodemon --watch src src/app.js",
-    "db:migrate": "npx sequelize db:migrate",
-    "db:migrate:create": "npx makemigration"
+    "db:migration": "npx sequelize db:migrate",
+    "db:seed": "npx sequelize db:seed:all",
+    "db:migration:create": "npx makemigration --name"
   },
   "dependencies": {
     "argon2": "^0.27.1",
@@ -15,6 +16,7 @@
     "celebrate": "^13.0.4",
     "cheerio": "^1.0.0-rc.5",
     "cookie-parser": "~1.4.4",
+    "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
     "express-jwt": "^6.0.0",

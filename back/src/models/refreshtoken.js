@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            this.belongsTo(models.User);
+
         }
     }
     RefreshToken.init({
@@ -44,11 +44,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         createdAt: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+            defaultValue: sequelize.fn('NOW'),
         },
         updatedAt: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+            defaultValue: sequelize.fn('NOW'),
+            onUpdate : sequelize.literal('CURRENT_TIMESTAMP'),
         },
     }, {
         sequelize,
