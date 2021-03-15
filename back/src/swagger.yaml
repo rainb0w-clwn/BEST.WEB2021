@@ -6,11 +6,19 @@ info:
 servers:
   - url: http://localhost:4200
     description: Local development server
+tags:
+  - name: "product"
+    description: "Everything about products"
+  - name: "users"
+    description: "Operations about users"
+  - name: "user"
+    description: "Operations about user"
+
 
 paths:
   /auth/signup:
     post:
-      summary: Авторизация пользователя
+      summary: user authorization
       operationId: signup
       requestBody:
         required: true
@@ -30,7 +38,7 @@ paths:
                 - password
       responses:
         "200":
-          description: Данные пользователя, a JWT т and a refresh token cookie
+          description: user data, a JWT т and a refresh token cookie
           headers:
             Set-Cookie:
               description: "`refreshToken`"
@@ -330,3 +338,103 @@ components:
               message:
                 type: string
                 example: "Not Found"
+
+  /product:
+    parameters:
+      - in: query
+        name: name
+        description: product name
+        required: true
+        example: "__"
+        schema:
+          type: string
+      in: query
+      name: category
+        description: product category
+        example: "__"
+        schema:
+        type: string
+      in: query
+      name: store_type
+       description: product category
+       example: "__"
+       schema:
+       type: string
+      in: query
+      name: rating
+       description: product rating
+       example: "__"
+       schema:
+       type: string
+      in: query
+        name: priceFrom
+          description: lower price limit
+          example: "__"
+          schema:
+          type: string
+      in: query
+        name: priceTo
+          description: upper price limit
+          example: "__"
+          schema:
+          type: string
+      in: query
+        name: SortBy
+          description: upper price limit
+          example: "__"
+          schema:
+          type: object
+      in: query
+        name: offset
+          description: indent
+          example: "__"
+          schema:
+          type: object
+      in: query
+        name: limit
+          description: max number of products on page
+          example: "__"
+          schema:
+          type: object
+    get:
+      summary: Get a list of all products with the specified name
+      description: ""
+      operationId: productName
+      responses:
+        "200":
+          description: Users product
+            content:
+  /product/favorite:
+    get:
+    summary: Get a list of users favorites products
+    operationId: CheckFavorite
+    responses:
+      "200":
+        description: Users list of favorite
+          content:
+      "403":
+        description: You are not authorized to perform this operation.
+  /favorite/{productId}:
+    parameters:
+      - in: path
+        name: productId
+        description: product Id
+        required: true
+        example: "__"
+        schema:
+          type: string
+    post:
+      summary: Create a product by ID
+      operationId: CrProductById
+      responses:
+          "200":
+            description: product was successfully created
+
+    delete:
+      summary: Delete a product by ID
+        operationId: DelProductById
+        responses:
+          "200":
+            description: product deleted successfully
+          "403":
+            description: You have no rights to perform this operation.
