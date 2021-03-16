@@ -28,7 +28,7 @@ module.exports = (app) => {
             try {
                 let productInstance = new Product();
                 let result = await productInstance.getProducts(req.query);
-                return res.status(200).json(result);
+                return res.status(200).json({data: result});
             } catch (e) {
                 next(e);
             }
@@ -40,7 +40,7 @@ module.exports = (app) => {
             try {
                 let productInstance = new Product();
                 let result = await productInstance.getFavorite(req.currentUser.id);
-                return res.status(200).json(result);
+                return res.status(200).json({data: result});
             } catch (e) {
                 next(e);
             }

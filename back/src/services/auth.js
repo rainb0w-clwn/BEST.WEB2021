@@ -57,16 +57,17 @@ module.exports = class AuthService {
         const userRecord = await this.userModel.findOne({where: {login: login}});
         if (userRecord === null) {
             let e = new Error('Login or password is incorrect');
-            e.name = 'Unauthorized';
+            e.name = 'AuthorizeError';
             throw e;
         }
         const validPassword = await argon2.verify(userRecord.password, password);
         if (!validPassword) {
             let e = new Error('Login or password is incorrect');
-            e.name = 'Unauthorized';
+            e.name = 'AuthorizeError';
             throw e;
         }
         let user = userRecord.toJSON();
+
         Reflect.deleteProperty(user, 'password');
         Reflect.deleteProperty(user, 'salt');
         Reflect.deleteProperty(user, 'createdAt');
@@ -74,7 +75,6 @@ module.exports = class AuthService {
 
         const token = this.generateJWT(userRecord);
         const refreshToken = await this.generateRefreshToken(user.id, ip, user_agent, browser, os);
-
         return {
             ...this.basicDetails(user),
             token,
@@ -188,8 +188,8 @@ module.exports = class AuthService {
     }
 
     basicDetails(user) {
-        const {id, login, email, roles, lastname, firstname} = user;
-        return {id, login, email, roles, lastname, firstname};
+        const {login, email, lastname, firstname} = user;
+        return {login, email, lastname, firstname};
     }
 
     setTokenCookie(res, token) {

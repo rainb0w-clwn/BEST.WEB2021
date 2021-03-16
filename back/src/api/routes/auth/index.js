@@ -27,6 +27,7 @@ module.exports = (app) => {
                 const authServiceInstance = new AuthService();
                 const userData = await authServiceInstance.SignUp(login, password, ip, source, browser, os, email, lastname, firstname);
                 authServiceInstance.setTokenCookie(res, userData.refreshToken);
+                Reflect.deleteProperty(userData, 'refreshToken');
                 return res.status(201).json(userData);
             } catch (e) {
                 next(e);
@@ -48,6 +49,7 @@ module.exports = (app) => {
                 const authServiceInstance = new AuthService();
                 const userData = await authServiceInstance.SignIn(login, password, ip, source, browser, os);
                 authServiceInstance.setTokenCookie(res, userData.refreshToken);
+                Reflect.deleteProperty(userData, 'refreshToken');
                 return res.status(200).json(userData);
             } catch (e) {
                 next(e);
@@ -79,7 +81,6 @@ module.exports = (app) => {
                 refreshToken: Joi.string().length(80).required(),
             }),
         }),
-        middlewares.isAuth,
         async function (req, res, next) {
             try {
                 const token = req.cookies.refreshToken;

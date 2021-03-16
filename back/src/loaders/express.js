@@ -5,9 +5,9 @@ const config = require('../config');
 const swagger = require("../_helper/swagger");
 const useragent = require('express-useragent');
 const requestIp = require('request-ip');
-const {errors} = require('celebrate'); // handle celebrate joi errors
+const {errors, isCelebrateError} = require('celebrate'); // handle celebrate joi errors
 const {Logger} = require('../utlis');
-var cors = require('cors')
+var cors = require('cors');
 
 module.exports = async ({app}) => {
     app.enable('trust proxy');
@@ -31,17 +31,14 @@ module.exports = async ({app}) => {
 
     app.use(errors());
 
-    app.use((req, res, next) => {
-        const err = new Error('Not Found');
-        err['status'] = 404;
-        next(err);
-    });
-
     app.use((err, req, res, next) => {
         Logger.error('error: %o', err);
         let error = err.name;
         let message = err.message;
         let status = res.statusCode;
+        if (isCelebrateError(err)) {
+            return next(err);
+        }
         switch (status) {
             case 400:
                 error = 'Input Validation Error';
@@ -62,10 +59,15 @@ module.exports = async ({app}) => {
         switch (error) {
             case 'Unauthorized':
             case 'UnauthorizedError':
+            case 'AuthorizeError':
                 status = 401;
                 break;
             case 'SequelizeForeignKeyConstraintError':
                 status = 400;
+                break;
+            case 'Not Found':
+                status = 404;
+                break;
         }
         res.status(status).json({
             statusCode: status,
@@ -73,6 +75,23 @@ module.exports = async ({app}) => {
             error: error,
         });
     });
+
+    app.use(function(req, res, next) {
+        return res.status(404).json({
+            statusCode: 404,
+            message: 'Not Found',
+            error: 'Not Found',
+        });
+    });
+
+    app.use(function(err, req, res, next) {
+        return res.status(500).json({
+            statusCode: 505,
+            message: 'Internal Error',
+            error: err,
+        });
+    });
+
     // Return the express app
     return app;
 };
