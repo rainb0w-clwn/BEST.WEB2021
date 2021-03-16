@@ -6,11 +6,313 @@ info:
 servers:
   - url: http://localhost:4200
     description: Local development server
+tags:
+  - name: "product"
+    description: "Everything about products"
+  - name: "users"
+    description: "Operations about users"
+
+
 
 paths:
+  /product:
+    get:
+      tags:
+        - "product"
+      summary: Get a list of all products with the specified name
+      description: ""
+      operationId: productName
+      parameters:
+        - in: query
+          name: "name"
+          description: product name
+          required: true
+          example: "Wi-Fi роутер"
+          schema:
+            type: "string"
+
+
+        - in: query
+          name: category
+          description: product category
+          example: "Wi-Fi и Bluetooth"
+          schema:
+            type: "string"
+
+        - in: query
+          name: store_type
+          description: Store name
+          example: "Беру"
+          schema:
+            type: "string"
+
+        - in: query
+          name: rating
+          description: product rating
+          example: "0"
+          schema:
+            type: "string"
+        - in: query
+          name: priceFrom
+          description: lower price limit
+          example: "500"
+          schema:
+            type: "string"
+        - in: query
+          name: priceTo
+          description: upper price limit
+          example: "500000"
+          schema:
+            type: "string"
+        - in: query
+          name: SortBy
+          description: sorting of products
+          schema:
+            type: object
+            properties:
+              price:
+                type: string
+                example: "ASC"
+              rating:
+                type: string
+                example: "DESK"
+        - in: query
+          name: offset
+          description: displacement of products by number
+          example: "4"
+          schema:
+            type: string
+        - in: query
+          name: limit
+          description: max number of products on page
+          example: "3"
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Users product
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: "437376"
+                    store_type:
+                      type: integer
+                      example: "Беру"
+                    code:
+                      type: integer
+                      example: "100338130338"
+                    category:
+                      type: integer
+                      example: "Сетевое оборудование Wi-Fi и Bluetooth/TP-LINK"
+                    name:
+                      type: integer
+                      example: "Wi-Fi адаптер TP-LINK TL-WN823N черный"
+                    price:
+                      type: integer
+                      example: "590"
+                    currancy:
+                      type: integer
+                      example: "RUR"
+                    rating:
+                      type: integer
+                      example: "0"
+                    rating_count:
+                      type: integer
+                      example: "0"
+
+
+
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
+  /product/favorite:
+    get:
+      tags:
+        - "product"
+      summary: Get a list of users favorites products
+      operationId: CheckFavorite
+      responses:
+        "200":
+          description: Users favorite products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: "4"
+                    product_id:
+                      type: integer
+                      example: "437376"
+                    user_id:
+                      type: integer
+                      example: "2"
+                    blocked:
+                      type: boolean
+                      example: "false"
+
+        "401":
+          description: you need to authorize to have permission to access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized. Authorization Required"
+        "403":
+          description: you don't have permission to access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Forbiden"
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
+  /favorite/{productId}:
+    post:
+      tags:
+        - "product"
+      summary: Create a product by ID
+      operationId: CrProductById
+      parameters:
+        - in: path
+          name: productId
+          description: product Id
+          required: true
+          example: "437370"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: add the product to favorite list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "OK"
+        "401":
+          description: you need to authorize to have permission to access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized. Authorization Required"
+        "403":
+          description: you don't have permission to access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Forbiden"
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
+    delete:
+      tags:
+        - "product"
+      summary: Delete a product by ID
+      operationId: DelProductById
+      parameters:
+        - in: path
+          name: productId
+          description: product Id
+          required: true
+          example: "437370"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: delete the product from favorite list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "OK"
+        "401":
+          description: you need to authorize to have permission to access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized. Authorization Required"
+        "403":
+          description: you don't have permission to access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Forbiden"
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
+
   /auth/signup:
     post:
-      summary: Авторизация пользователя
+      tags:
+        - "users"
+      summary: user authorization
       operationId: signup
       requestBody:
         required: true
@@ -30,7 +332,7 @@ paths:
                 - password
       responses:
         "200":
-          description: Данные пользователя, a JWT т and a refresh token cookie
+          description: user data, a JWT т and a refresh token cookie
           headers:
             Set-Cookie:
               description: "`refreshToken`"
@@ -70,8 +372,21 @@ paths:
                   message:
                     type: string
                     example: "Username or password is incorrect"
+
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
   /users/refresh-token:
     post:
+      tags:
+        - "users"
       summary: Use a refresh token to generate a new JWT token and a new refresh token
       description: The refresh token is sent and returned via cookies.
       operationId: refreshToken
@@ -124,8 +439,20 @@ paths:
                   message:
                     type: string
                     example: "Invalid token"
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
   /users/revoke-token:
     post:
+      tags:
+        - "users"
       summary: Revoke a refresh token
       description: Admin users can revoke the tokens of any user, regular users can only revoke their own tokens.
       operationId: revokeToken
@@ -170,8 +497,20 @@ paths:
                     example: "Invalid token"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
   /users:
     get:
+      tags:
+        - "users"
       summary: Get a list of all users
       description: Restricted to admin users.
       operationId: getAllUsers
@@ -204,6 +543,16 @@ paths:
                       example: "Admin"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
   /users/{id}:
     parameters:
       - in: path
@@ -214,6 +563,8 @@ paths:
         schema:
           type: string
     get:
+      tags:
+        - "users"
       summary: Get a single user by id
       description: Admin users can access any user record, regular users are restricted to their own user record.
       operationId: getUserById
@@ -246,6 +597,16 @@ paths:
           $ref: "#/components/responses/NotFoundError"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
   /users/{id}/refresh-tokens:
     parameters:
       - in: path
@@ -256,6 +617,8 @@ paths:
         schema:
           type: string
     get:
+      tags:
+        - "users"
       summary: Get a list of all refresh tokens (active and revoked) of the user with the specified id
       description: Admin users can access any user's refresh tokens, regular users are restricted to their own refresh tokens.
       operationId: getRefreshTokens
@@ -302,6 +665,16 @@ paths:
           $ref: "#/components/responses/NotFoundError"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Server fall
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: " Internal Error"
 
 components:
   securitySchemes:
@@ -330,3 +703,4 @@ components:
               message:
                 type: string
                 example: "Not Found"
+
