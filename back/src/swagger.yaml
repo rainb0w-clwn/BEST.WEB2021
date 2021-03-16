@@ -66,32 +66,68 @@ paths:
             type: "string"
         - in: query
           name: SortBy
-          description: upper price limit
+          description: sorting of products
           schema:
             type: object
             properties:
               price:
                 type: string
-                example: "///"
+                example: "ASC"
               rating:
                 type: string
-                example: "///"
+                example: "DESK"
         - in: query
           name: offset
-          description: indent
-          example: "__"
+          description: displacement of products by number
+          example: "4"
           schema:
             type: string
         - in: query
           name: limit
-          description: max number of products on page from
-          example: "__"
+          description: max number of products on page
+          example: "3"
           schema:
             type: string
 
       responses:
         "200":
           description: Users product
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: "437376"
+                    store_type:
+                      type: integer
+                      example: "Беру"
+                    code:
+                      type: integer
+                      example: "100338130338"
+                    category:
+                      type: integer
+                      example: "Сетевое оборудование Wi-Fi и Bluetooth/TP-LINK"
+                    name:
+                      type: integer
+                      example: "Wi-Fi адаптер TP-LINK TL-WN823N черный"
+                    price:
+                      type: integer
+                      example: "590"
+                    currancy:
+                      type: integer
+                      example: "RUR"
+                    rating:
+                      type: integer
+                      example: "0"
+                    rating_count:
+                      type: integer
+                      example: "0"
+
+
 
         "500":
           description: Server fall
@@ -111,7 +147,27 @@ paths:
       operationId: CheckFavorite
       responses:
         "200":
-          description: Users list of favorite
+          description: Users favorite products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: "4"
+                    product_id:
+                      type: integer
+                      example: "437376"
+                    user_id:
+                      type: integer
+                      example: "2"
+                    blocked:
+                      type: boolean
+                      example: "false"
+
         "401":
           description: you need to authorize to have permission to access
           content:
@@ -158,7 +214,15 @@ paths:
             type: string
       responses:
         "200":
-          description: Users list of favorite
+          description: add the product to favorite list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "OK"
         "401":
           description: you need to authorize to have permission to access
           content:
@@ -204,7 +268,15 @@ paths:
             type: string
       responses:
         "200":
-          description: Users list of favorite
+          description: delete the product from favorite list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "OK"
         "401":
           description: you need to authorize to have permission to access
           content:
@@ -631,5 +703,4 @@ components:
               message:
                 type: string
                 example: "Not Found"
-
 
