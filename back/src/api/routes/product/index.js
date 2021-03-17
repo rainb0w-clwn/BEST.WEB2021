@@ -28,7 +28,7 @@ module.exports = (app) => {
             try {
                 let productInstance = new Product();
                 let result = await productInstance.getProducts(req.query);
-                return res.status(200).json({data: result});
+                return res.status(200).json( result);
             } catch (e) {
                 next(e);
             }
