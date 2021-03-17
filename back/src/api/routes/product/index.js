@@ -20,7 +20,7 @@ module.exports = (app) => {
                     price: Joi.string().valid(...['asc', 'ASC', 'desc', 'DESC']),
                     rating: Joi.string().valid(...['asc', 'ASC', 'desc', 'DESC']),
                 }),
-                offset: Joi.number().integer(),
+                page: Joi.number().integer(),
                 limit: Joi.number().integer(),
             }),
         }),

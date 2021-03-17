@@ -17,4 +17,7 @@ export const api = {
     userMe: () => {
         return axios.get(`${config.apiUrl}/user/me`);
     },
+    getProducts: (query) => {
+        return axios.get(`${config.apiUrl}/product`, {params: query});
+    },
 };

@@ -15,9 +15,11 @@ module.exports = class ProductService {
         let categories = {};
         let store_type = {};
         let pageCount = 0;
+        let totalPage = 1;
         if (count !== 0) {
-            let {limit} = params;
-            limit = limit != null && limit <= 500 ? limit : 100;
+            let {limit, page} = params;
+            limit = limit != null && limit <= 72 ? limit : 72;
+            totalPage = page != null && page > 0 ? page : totalPage;
             pageCount = Math.ceil(count/limit);
             countQuery.attributes = [];
             countQuery.attributes.push('category');
@@ -31,7 +33,7 @@ module.exports = class ProductService {
         let quary = this.getQuery(params);
         let data = await Models.Product.findAll(quary);
 
-        return {data: data, pageCount: pageCount, categories: categories, store_types: store_type};
+        return {page: totalPage, pageCount: pageCount, categories: categories, store_types: store_type, data: data};
     }
 
     async getFavorite(userId) {
@@ -57,15 +59,15 @@ module.exports = class ProductService {
     }
 
     getQuery(params) {
-        let {name, category, store_type, rating, priceFrom, priceTo, sortBy, offset, limit} = params;
+        let {name, category, store_type, rating, priceFrom, priceTo, sortBy, page, limit} = params;
         let data = {
             order: [],
         };
-
         // console.log(params);
         let sortByAllow = ['price', 'rating'];
         let whereCondition = {};
         if (name != null) {
+            name = name.trim();
             whereCondition[Op.or] = [{name: {[Op.iLike]: '%'+name+'%'}}, {category: {[Op.iLike]: '%'+name+'%'}}];
             let escapedName = Models.sequelize.escape(`%${name}%`);
             data.order.push(Models.sequelize.literal(`name ILIKE ${escapedName} OR NULL`));
@@ -93,8 +95,9 @@ module.exports = class ProductService {
                     data.order.push([key, sortBy[key]]) : null;
             });
         }
-        offset != null ? data.offset = offset : null;
-        data.limit = limit != null && limit <= 500 ? limit : 100;
+        data.limit = limit != null && limit <= 72 ? limit : 72;
+        page = page != null && page > 0 ? page : 1;
+        data.offset = (page - 1) * data.limit;
 
         whereCondition != null ? data.where = whereCondition : null;
         return data;
@@ -113,6 +116,7 @@ module.exports = class ProductService {
             // console.log(params);
             let whereCondition = {};
             if (name != null) {
+                name = name.trim();
                 whereCondition[Op.or] = [{name: {[Op.iLike]: '%'+name+'%'}}, {category: {[Op.iLike]: '%'+name+'%'}}];
                 let escapedName = Models.sequelize.escape(`%${name}%`);
                 data.order.push(Models.sequelize.literal(`name ILIKE ${escapedName} OR NULL`));
