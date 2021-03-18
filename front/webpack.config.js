@@ -2,7 +2,7 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const devMode = process.env.NODE_ENV !== "production";
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyPlugin = require('webpack-copy-plugin');
+// const CopyPlugin = require('webpack-copy-plugin');
 
 module.exports = {
     entry: "./src/index.js",
@@ -26,9 +26,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: "./src/index.html"
         }),
-        new CopyPlugin({ dirs: [
-            { from: "./public"},
-            ]}),
+        // new CopyPlugin({ dirs: [
+        //     { from: "./public"},
+        //     ]}),
         // new MiniCssExtractPlugin({
         //     filename: "[name].css",
         //     chunkFilename: "[id].css"

@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import {Header, ProductDeck} from '../_components';
+import {Home} from "../Home";
 
-import { userActions } from '../_actions';
-import {Header, ProductDeck, ProductFilter} from '../_components';
-class Home extends React.Component {
+class Search extends React.Component {
     // constructor(props) {
     //     super(props);
     //     this.handleLogout = this.handleLogout.bind(this);
@@ -12,17 +11,18 @@ class Home extends React.Component {
     // componentDidMount() {
     //     // this.props.dispatch(userActions.getAll());
     // }
-
+    //
     // handleLogout(e) {
     //     this.props.dispatch(userActions.logout());
     // }
 
     render() {
-        const { user, users } = this.props;
+        // const { user, users } = this.props;
         return (
-            <div>
+            <React.Fragment>
                 <Header/>
-            </div>
+                <ProductDeck/>
+            </React.Fragment>
         );
     }
 }
@@ -37,5 +37,5 @@ function mapStateToProps(state) {
     return {};
 }
 
-const connectedHome = connect(mapStateToProps)(Home);
-export { connectedHome as Home };
+const connectedSearch = connect(mapStateToProps)(Search);
+export { connectedSearch as Search };

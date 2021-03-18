@@ -16,20 +16,23 @@ module.exports = class ProductService {
         let store_type = {};
         let pageCount = 0;
         let totalPage = 1;
-        if (count !== 0) {
-            let {limit, page} = params;
+        let {needCategories, limit, page} = params;
+        needCategories = needCategories != null ? needCategories : 0
+        if (count !== 0 && needCategories > 0) {
             limit = limit != null && limit <= 72 ? limit : 72;
-            totalPage = page != null && page > 0 ? page : totalPage;
             pageCount = Math.ceil(count/limit);
             countQuery.attributes = [];
-            countQuery.attributes.push('category');
-            countQuery.group = 'category';
-            categories = await Models.Product.count(countQuery);
+            let categoriesCountQuery = countQuery;
+            categoriesCountQuery.attributes.push('category');
+            categoriesCountQuery.group = 'category';
+            categoriesCountQuery.order = [];
+            categories = await Models.Product.count(categoriesCountQuery);
             countQuery.attributes = [];
             countQuery.attributes.push('store_type');
             countQuery.group = 'store_type';
             store_type = await Models.Product.count(countQuery);
         }
+        totalPage = page != null && page > 0 ? page : totalPage;
         let quary = this.getQuery(params);
         let data = await Models.Product.findAll(quary);
 
@@ -69,9 +72,6 @@ module.exports = class ProductService {
         if (name != null) {
             name = name.trim();
             whereCondition[Op.or] = [{name: {[Op.iLike]: '%'+name+'%'}}, {category: {[Op.iLike]: '%'+name+'%'}}];
-            let escapedName = Models.sequelize.escape(`%${name}%`);
-            data.order.push(Models.sequelize.literal(`name ILIKE ${escapedName} OR NULL`));
-            data.order.push(Models.sequelize.literal(`category ILIKE ${escapedName} OR NULL`));
         }
         category != null ? whereCondition.category = category : null;
         store_type != null ? whereCondition.store_type = store_type : null;
@@ -98,7 +98,7 @@ module.exports = class ProductService {
         data.limit = limit != null && limit <= 72 ? limit : 72;
         page = page != null && page > 0 ? page : 1;
         data.offset = (page - 1) * data.limit;
-
+        data.order.push('id');
         whereCondition != null ? data.where = whereCondition : null;
         return data;
     }
@@ -118,9 +118,6 @@ module.exports = class ProductService {
             if (name != null) {
                 name = name.trim();
                 whereCondition[Op.or] = [{name: {[Op.iLike]: '%'+name+'%'}}, {category: {[Op.iLike]: '%'+name+'%'}}];
-                let escapedName = Models.sequelize.escape(`%${name}%`);
-                data.order.push(Models.sequelize.literal(`name ILIKE ${escapedName} OR NULL`));
-                data.order.push(Models.sequelize.literal(`category ILIKE ${escapedName} OR NULL`));
             }
             category != null ? whereCondition.category = category : null;
             store_type != null ? whereCondition.store_type = store_type : null;

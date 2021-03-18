@@ -72,13 +72,15 @@ code {
 }
 /*Header*/
 header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.26);
   background-color: rgb(251, 250, 250);
-  padding: 20px;
   position: sticky;
   position: -webkit-sticky;
   top:0;
   z-index: 100;
+}
+#header-top-section, #header-bottom-section {
+  padding: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.26);
 }
 .header-row.row {
   align-items: center;
@@ -100,7 +102,44 @@ header {
   flex-basis: 80%;
 }
 /*Search pane*/
+.header-input {
+  display: block;
+  width: 100%;
+  height: calc(2.25rem + 2px);
+  padding: 1.75rem 1.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 2.25rem;
+  transition: 0.30s ease-in-out;
+  box-shadow: 0 2px 2px 0 #00000075;
+  -webkit-transition: all 0.30s ease-in-out;
+  -moz-transition: all 0.30s ease-in-out;
+  -ms-transition: all 0.30s ease-in-out;
+  -o-transition: all 0.30s ease-in-out;
+  background: -webkit-linear-gradient(180deg, rgb(255, 251, 242), rgb(244, 244, 244));
+  background: -moz-linear-gradient(180deg, rgb(255, 251, 242), rgb(244, 244, 244));
+  background: linear-gradient(180deg, rgb(255, 251, 242), rgb(244, 244, 244));
+  outline: 0 !important;
+}
+.header-input:focus {
+  box-shadow: 0 3px 12px 0 #68b8c5bd
+}
+.header-input:hover {
+  /*box-shadow: 0 2px 2px 0 #00000075;*/
+}
 
+
+.header-input-icon {
+  padding-right: calc(1.5em + 1.75rem);
+  background-image: url('/public/search.svg');
+  background-repeat: no-repeat;
+  background-position: center right calc(.375em + .1875rem);
+  background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
 form .inner-form .basic-search {
   box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -127,7 +166,11 @@ form .inner-form .basic-search .input-field .icon-wrap {
   width: 60px;
   height: 100%;
 }
+.button-search-icon:hover {
+  transform: scale(1.5);
+  cursor: pointer;
 
+}
 form .inner-form .basic-search .input-field .icon-wrap svg {
   width: 34px;
   height: 34px;
@@ -198,10 +241,12 @@ form .inner-form .input-field input:hover, form .inner-form .input-field input:f
 /**/
 
 /*Product deck*/
-.product-deck > .product-card {
+.product-deck .product-card {
   width: 30%;
   /*max-width: 30%;*/
   /*min-width: 30%;*/
+  text-decoration: none;
+  color: inherit
 }
 
 .product-deck {
@@ -304,5 +349,15 @@ main .product-header {
 }
 .product-rating-count {
   vertical-align: sub;
+}
+/**/
+
+/*Filters*/
+.scrollable-menu {
+  height: auto;
+  max-height: 200px;
+  width: 300px;
+
+  overflow-x: hidden;
 }
 /**/

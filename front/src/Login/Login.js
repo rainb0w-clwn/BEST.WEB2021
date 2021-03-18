@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { userActions } from '../_actions';
@@ -38,9 +38,11 @@ class Login extends React.Component {
     }
 
     render() {
-        const { loggingIn } = this.props;
+        const { user, loggingIn } = this.props;
+        console.log(this.state);
         const { username, password, submitted } = this.state;
         return (
+            <React.Fragment>
             <div className="col-md-6 col-md-offset-3">
                 <h2>Login</h2>
                 <form name="form" onSubmit={this.handleSubmit}>
@@ -66,12 +68,14 @@ class Login extends React.Component {
                     </div>
                 </form>
             </div>
+            </React.Fragment>
         );
     }
 }
 
 function mapStateToProps(state) {
-    const { loggingIn } = state.auth;
+    const { auth } = state;
+    const {user, loggingIn } = auth;
     return {
         loggingIn
     };

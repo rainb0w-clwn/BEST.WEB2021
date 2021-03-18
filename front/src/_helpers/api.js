@@ -1,5 +1,6 @@
 import axios from "axios";
 import config from "config";
+import {authHeader} from './'
 
 export const api = {
     signup: (body) => {
@@ -19,5 +20,29 @@ export const api = {
     },
     getProducts: (query) => {
         return axios.get(`${config.apiUrl}/product`, {params: query});
+    },
+    getFavorites: () => {
+        let header = authHeader();
+        return axios.get(`${config.apiUrl}/product/favorite`, {
+            headers: {
+                ...header,
+            }
+        });
+    },
+    setFavorite: (productId) => {
+        let header = authHeader()
+        return axios.post(`${config.apiUrl}/product/favorite/`, {product_id: productId}, {
+            headers: {
+                header,
+            }
+        });
+    },
+    deleteFavorite: (productId) => {
+        let header = authHeader()
+        return axios.delete(`${config.apiUrl}/product/favorite/`, {body: {product_id: productId},
+            headers: {
+                header,
+            }
+        });
     },
 };

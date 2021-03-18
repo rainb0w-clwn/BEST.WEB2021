@@ -1,9 +1,13 @@
 import config from 'config';
-import {authHeader, api} from '../_helpers';
+import {api} from '../_helpers';
+import {userService} from './';
 import axios from 'axios';
 
 export const productService = {
     getProducts,
+    setFavorite,
+    getFavorites,
+    deleteFavorite
     // logout,
 };
 
@@ -15,7 +19,30 @@ function getProducts(userInput) {
         return Promise.reject();
     });
 }
-
+function getFavorites() {
+    return api.getFavorites().then(res => {
+        return res.data;
+    }).catch(error =>{
+        console.log(error);
+        return Promise.reject();
+    });
+}
+function setFavorite(productId) {
+    return api.setFavorite(productId).then(res => {
+        return res.data;
+    }).catch(error =>{
+        console.log(error);
+        return Promise.reject();
+    });
+}
+function deleteFavorite(productId) {
+    return api.deleteFavorite(productId).then(res => {
+        return res.data;
+    }).catch(error =>{
+        console.log(error);
+        return Promise.reject();
+    });
+}
 function logout() {
     localStorage.removeItem('user');
     return api.logout().then(res => {
@@ -26,44 +53,20 @@ function logout() {
     });
 }
 
-function refreshToken() {
-    return api.refreshToken().then(res => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        if (res.status === 200) {
-            localStorage.setItem('user', JSON.stringify(res.data));
-            return res.data;
-        } else {
-            return Promise.reject();
+
+axios.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    function (error) {
+        const originalRequest = error.config;
+
+        if (
+            (error.response.status === 401
+                && !originalRequest._retry)) {
+            originalRequest._retry = true;
+            return userService.refreshToken();
         }
-    }).catch(error =>{
-        console.log(error);
-        return Promise.reject();
-    });
-}
-//
-// function getAll() {
-//     const requestOptions = {
-//         method: 'GET',
-//         headers: authHeader()
-//     };
-//
-//     return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
-// }
-//
-// function handleResponse(response) {
-//     return response.text().then(text => {
-//         const data = text && JSON.parse(text);
-//         if (!response.ok) {
-//             if (response.status === 401) {
-//                 // auto logout if 401 response returned from api
-//                 // logout();
-//                 window.location.reload(true);
-//             }
-//
-//             const error = (data && data.message) || response.statusCode;
-//             return Promise.reject(error);
-//         }
-//
-//         return data;
-//     });
-// }
+        return Promise.reject(error);
+    }
+);

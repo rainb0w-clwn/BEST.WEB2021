@@ -4,6 +4,7 @@ import axios from 'axios';
 export const userService = {
     login,
     logout,
+    refreshToken
 };
 
 function login(login, password) {
@@ -52,9 +53,8 @@ axios.interceptors.response.use(
 
         if (
             (error.response.status === 401
-                && (error.response.error == 'Unauthorized')) &&
-            !originalRequest._retry
-        ) {
+                && (error.response.error == 'UnauthorizedError' && error.response.message == 'jwt expired')
+                    && !originalRequest._retry)) {
             originalRequest._retry = true;
             return refreshToken();
         }
@@ -66,9 +66,9 @@ axios.interceptors.response.use(
 //request interceptor to add the auth token header to requests
 axios.interceptors.request.use(
     (config) => {
-        const accessToken = localStorage.getItem("accessToken");
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
+        const user = localStorage.getItem("user");
+        if (user && user.token) {
+            config.headers.Authorization = `Bearer ${user.token}`;
         }
         return config;
     },

@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { userActions } from '../_actions';
-import {Header, ProductDeck, ProductFilter} from '../_components';
-class Home extends React.Component {
+import {Header,ProductDeck} from '../_components';
+
+class Favorite extends React.Component {
     // constructor(props) {
     //     super(props);
-    //     this.handleLogout = this.handleLogout.bind(this);
+    //     // this.handleLogout = this.handleLogout.bind(this);
     // }
     // componentDidMount() {
     //     // this.props.dispatch(userActions.getAll());
@@ -18,11 +19,11 @@ class Home extends React.Component {
     // }
 
     render() {
-        const { user, users } = this.props;
         return (
-            <div>
+            <React.Fragment>
                 <Header/>
-            </div>
+                <ProductDeck favorite={true}/>
+            </React.Fragment>
         );
     }
 }
@@ -34,8 +35,8 @@ function mapStateToProps(state) {
     //     user,
     //     users
     // };
-    return {};
+    return {}
 }
 
-const connectedHome = connect(mapStateToProps)(Home);
-export { connectedHome as Home };
+const connectedFavorite = connect(mapStateToProps)(Favorite);
+export { connectedFavorite as Favorite };
