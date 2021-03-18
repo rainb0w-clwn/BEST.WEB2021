@@ -2,7 +2,7 @@ import React, {useCallback, useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import {Container, Row, Col, Button} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faHeart} from "@fortawesome/free-solid-svg-icons";
+import {faHeart, faUser} from "@fortawesome/free-solid-svg-icons";
 import {userActions, productActions, searchActions} from "../_actions";
 import {useDispatch, useSelector} from "react-redux";
 import {searchConstants} from "../_constants";
@@ -26,6 +26,10 @@ export const Header = () => {
         dispatch({type: searchConstants.SEARCH_SET_INPUT, input: {[e.target.name]: e.target.value}})
     }, [dispatch]), 1);
     const search = useSelector(state => state.search);
+    let user = localStorage.getItem('user');
+    if (user) {
+        user = JSON.parse(user);
+    }
     function handleSubmit(e) {
         e.preventDefault();
         if (search && search.name != '') {
@@ -69,13 +73,25 @@ export const Header = () => {
                                     </form>
                                 </Col>
                                 <Col xs={1} sm={12} md={1} lg={4} xl={3}
-                                     className="header-favorite d-flex justify-content-center align-items-center">
+                                     className="header-favorite d-flex justify-content-center align-items-center flex-column">
+                                    {user && user.login &&
+                                    <Link to='/login' className="mb-2">
+                                        <button className="favorite-button">
+                                    <span className="favorite-text mr-1 align-text-bottom">
+                                       {user.login}
+                                    </span>
+                                            <FontAwesomeIcon icon={faUser} size="2x" color="black"/>
+                                        </button>
+                                    </Link>
+
+                                    }
+
                                     <Link to='/favorite'>
                                         <button className="favorite-button">
                                     <span className="favorite-text mr-1 align-text-bottom">
                                         Мой wish-лист
                                     </span>
-                                            <FontAwesomeIcon icon={faHeart} size="2x" color="black"/>
+                                            <FontAwesomeIcon icon={faHeart} size="2x" color="red"/>
                                         </button>
                                     </Link>
                                 </Col>

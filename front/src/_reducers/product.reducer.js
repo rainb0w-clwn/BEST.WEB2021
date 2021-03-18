@@ -33,16 +33,17 @@ export function products(state = {}, action) {
         //GET FAVORITES
         case productConstants.GET_FAVORITES_REQUEST:
             return {
-                ...state,
                 loading: true
             };
         case productConstants.GET_FAVORITES_SUCCESS:
             return {
+                ...state,
                 loading: false,
                 favorite: action.products.data,
             };
         case productConstants.GET_FAVORITES_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
             //SET FAVORITES
@@ -58,6 +59,7 @@ export function products(state = {}, action) {
             };
         case productConstants.SET_FAVORITE_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
             //DELETE FAVORITE
@@ -68,6 +70,7 @@ export function products(state = {}, action) {
             };
         case productConstants.DELETE_FAVORITE_SUCCESS:
             return {
+                ...state,
                 loading: false,
                 favorite_delete: true,
             };

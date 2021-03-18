@@ -31,17 +31,17 @@ export const api = {
     },
     setFavorite: (productId) => {
         let header = authHeader()
-        return axios.post(`${config.apiUrl}/product/favorite/`, {product_id: productId}, {
+        return axios.post(`${config.apiUrl}/product/favorite/${productId}`, {product_id: productId}, {
             headers: {
-                header,
+                ...header,
             }
         });
     },
     deleteFavorite: (productId) => {
         let header = authHeader()
-        return axios.delete(`${config.apiUrl}/product/favorite/`, {body: {product_id: productId},
+        return axios.delete(`${config.apiUrl}/product/favorite/${productId}`, {body: {product_id: productId},
             headers: {
-                header,
+                ...header,
             }
         });
     },

@@ -113,14 +113,14 @@ export const ProductFilter = () => {
                                             className="flex-column justify-content-around align-items-center flex-nowrap">
                                             <span className="mb-1">Цена</span>
                                             <Row>
-                                                <Col xs={4}>
+                                                <Col xs={5}>
                                                     <div><input type="text" className="form-control" name="priceFrom"
                                                                 onChange={handleChange}/></div>
                                                 </Col>
                                                 <Col xs={1}>
                                                     <span>—</span>
                                                 </Col>
-                                                <Col xs={4}>
+                                                <Col xs={5}>
                                                     <div>
                                                         <input type="text" className="form-control" name="priceTo"
                                                                onChange={handleChange}/>

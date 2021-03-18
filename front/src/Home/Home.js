@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
+import {Container} from "react-bootstrap";
 import { userActions } from '../_actions';
 import {Header, ProductDeck, ProductFilter} from '../_components';
 class Home extends React.Component {
@@ -22,6 +22,12 @@ class Home extends React.Component {
         return (
             <div>
                 <Header/>
+                    <Container fluid>
+                        <div className="home-image-wrapper">
+                            <img src="public/home_placeholder.png"/>
+                        </div>
+                    </Container>
+
             </div>
         );
     }

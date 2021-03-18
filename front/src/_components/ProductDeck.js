@@ -46,7 +46,8 @@ const productPlaceholder = (
 class ProductDeck extends React.Component {
     constructor(props) {
         super(props);
-        // this.handleLogout = this.handleLogout.bind(this);
+        this.handleAddFavorite = this.handleAddFavorite.bind(this);
+        this.handleDeleteFavorite = this.handleDeleteFavorite.bind(this);
         this.state = {
             // query: {name: 'телефон', limit: '5'},
         };
@@ -63,7 +64,24 @@ class ProductDeck extends React.Component {
     componentDidMount() {
         this.updatePage();
     }
-
+    handleAddFavorite(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        let target = e.target;
+        let id = target.closest('.product-favorite').dataset.id;
+        if (id) {
+            this.props.dispatch(productActions.setFavorite(id));
+        }
+    }
+    handleDeleteFavorite(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        let target = e.target;
+        let id = target.closest('.product-favorite').dataset.id;
+        if (id) {
+            this.props.dispatch(productActions.deleteFavorite(id));
+        }
+    }
     // handleLogout(e) {
     //     this.props.dispatch(userActions.logout());
     // }
@@ -91,8 +109,8 @@ class ProductDeck extends React.Component {
                                         <div className="product-name font-weight-bold">
                                             {product.name}
                                         </div>
-                                        <div className="product-favorite">
-                                            <FontAwesomeIcon icon={faHeart} size="2x"/>
+                                        <div className="product-favorite" data-id={product.id} onClick={this.handleAddFavorite}>
+                                            <FontAwesomeIcon icon={fasHeart} className="product-favorite-icon" color="black" size="2x"/>
                                         </div>
                                     </div>
                                     <div className="product-info-sub">
@@ -134,8 +152,8 @@ class ProductDeck extends React.Component {
                                         <div className="product-name font-weight-bold">
                                             {product.Product.name}
                                         </div>
-                                        <div className="product-favorite">
-                                            <FontAwesomeIcon icon={fasHeart} size="2x" color="red"/>
+                                        <div className="product-favorite" data-id={product.Product.id} onClick={this.handleDeleteFavorite}>
+                                            <FontAwesomeIcon icon={fasHeart} size="2x" className="favorite-icon" color="red"/>
                                         </div>
                                     </div>
                                     <div className="product-info-sub">
