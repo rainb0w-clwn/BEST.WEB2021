@@ -5,6 +5,7 @@ import {Container} from "react-bootstrap";
 import {productActions, userActions} from '../_actions';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faHeart} from "@fortawesome/free-regular-svg-icons";
+import {faHeart as fasHeart} from "@fortawesome/free-solid-svg-icons";
 import StarRatings from 'react-star-ratings';
 
 import {TextBlock, MediaBlock, TextRow, RectShape, RoundShape} from 'react-placeholder/lib/placeholders';
@@ -123,27 +124,27 @@ class ProductDeck extends React.Component {
                         {products.favorite.map((product, index) =>
                             <a className="product-card h-100" key={index} href={product.url} target="_blank">
                                 <div className="product-header">
-                                    <img src={product.url_picture}/>
+                                    <img src={product.Product.url_picture}/>
                                 </div>
                                 <div className="card-body product-info">
                                     <div className="product-vendor">
-                                        {product.store_type}
+                                        {product.Product.store_type}
                                     </div>
                                     <div className="product-title">
                                         <div className="product-name font-weight-bold">
-                                            {product.name}
+                                            {product.Product.name}
                                         </div>
                                         <div className="product-favorite">
-                                            <FontAwesomeIcon icon={faHeart} size="2x"/>
+                                            <FontAwesomeIcon icon={fasHeart} size="2x" color="red"/>
                                         </div>
                                     </div>
                                     <div className="product-info-sub">
                                         <div className="product-price">
-                                            {product.price} ₽
+                                            {product.Product.price} ₽
                                         </div>
                                         <div className="product-rating">
                                             <StarRatings
-                                                rating={product.rating ? product.rating : 0}
+                                                rating={product.Product.rating ? product.Product.rating : 0}
                                                 starRatedColor="red"
                                                 // changeRating={this.changeRating}/
                                                 numberOfStars={5}
@@ -152,7 +153,7 @@ class ProductDeck extends React.Component {
                                                 starSpacing='4px'
                                             />
                                             <span className="product-rating-count ml-1">
-                                                    ({product.rating_count})
+                                                    ({product.Product.rating_count})
                                                 </span>
                                         </div>
                                     </div>

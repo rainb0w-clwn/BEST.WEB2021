@@ -27,7 +27,6 @@ module.exports = (app) => {
         }),
         async function (req, res, next) {
             try {
-                console.log(req.query);
                 let productInstance = new Product();
                 let result = await productInstance.getProducts(req.query);
                 return res.status(200).json( result);

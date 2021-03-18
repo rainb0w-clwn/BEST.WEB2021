@@ -40,7 +40,7 @@ module.exports = class ProductService {
     }
 
     async getFavorite(userId) {
-        let favorite = await Models.FavoriteProduct.findAll({where: {user_id: userId, blocked: false}});
+        let favorite = await Models.FavoriteProduct.findAll({where: {user_id: userId, blocked: false}, include: [Models.Product]});
         return favorite;
     }
 
