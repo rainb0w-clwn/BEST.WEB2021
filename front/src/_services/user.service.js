@@ -36,11 +36,10 @@ function refreshToken() {
         if (res.status === 200) {
             localStorage.setItem('user', JSON.stringify(res.data));
             return res.data;
-        } else {
-            return Promise.reject();
         }
     }).catch(error =>{
         console.log(error);
+        logout();
         return Promise.reject();
     });
 }

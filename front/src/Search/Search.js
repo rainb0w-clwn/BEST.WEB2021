@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {Header, ProductDeck} from '../_components';
 import {Home} from "../Home";
+import {Container} from "react-bootstrap";
 
 class Search extends React.Component {
     // constructor(props) {
@@ -18,23 +19,28 @@ class Search extends React.Component {
 
     render() {
         // const { user, users } = this.props;
+        const { products, } = this.props;
         return (
             <React.Fragment>
                 <Header/>
                 <ProductDeck/>
+                <Container fluid>
+                    {!products.loading && !products.search_started &&
+                    <div className="home-image-wrapper">
+                        <img src="public/home_placeholder.png"/>
+                    </div>
+                    }
+                </Container>
             </React.Fragment>
         );
     }
 }
 
 function mapStateToProps(state) {
-    // const { users, auth } = state;
-    // const { user } = auth;
-    // return {
-    //     user,
-    //     users
-    // };
-    return {};
+    const { products } = state;
+    return {
+        products,
+    };
 }
 
 const connectedSearch = connect(mapStateToProps)(Search);

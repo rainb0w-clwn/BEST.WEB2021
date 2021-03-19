@@ -39,11 +39,10 @@ class Login extends React.Component {
 
     render() {
         const {user, loggingIn} = this.props;
-        console.log(this.state);
         const {username, password, submitted} = this.state;
         return (
             <React.Fragment>
-                {user && user.login && <Redirect to={{pathname: '/'}}/>}
+                {(!user || !user.login) && <Redirect to={{pathname: '/login'}}/>}
                 <div className="col-md-6 col-md-offset-3">
                     <h2>Login</h2>
                     <form name="form" onSubmit={this.handleSubmit}>

@@ -382,9 +382,14 @@ main .product-header {
   margin-top: 10px;
   box-shadow: 0px 1px 8px 0px #00000026;
 }
+.home-image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
 .home-image-wrapper img {
   object-fit: contain;
+  height: 100%;
   width: 100%;
-  height: calc(100vh - 150px);
+  vertical-align: middle;
 }
 /**/

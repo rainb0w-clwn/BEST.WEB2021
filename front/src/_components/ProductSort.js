@@ -30,7 +30,7 @@ export const ProductSort = () => {
     const rating = useSelector(state => state.search.rating) || 0;
     return (
         <React.Fragment>
-            {products.search_type==='search' && products.products_data && products.products_data.length > 0 &&
+            {!products.loading && products.search_type==='search' && products.products_data && products.products_data.length > 0 &&
             <div id="product-sort">
                 <div className="product-sort-container">
                     <Col>

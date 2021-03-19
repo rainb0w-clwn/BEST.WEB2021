@@ -9,7 +9,7 @@ export function search(state = {category, store_type, name}, action) {
         case searchConstants.SEARCH_SET_INPUT_SUCCESS:
             return {
                 ...state,
-                needCategories: 0
+                needCategories: 0,
             }
         case searchConstants.DELETE_FROM_ARRAY: {
             state.category = state.category.filter((ele) => {
@@ -32,6 +32,9 @@ export function search(state = {category, store_type, name}, action) {
             }
             if (state.name == '') {
                 action.input.needCategories = 1;
+            }
+            if (action.input.name && state.name && action.input.name == state.name) {
+                action.input.needCategories = 0;
             }
             if (action.input.name && state.name && action.input.name != state.name) {
                 action.input.needCategories = 1;

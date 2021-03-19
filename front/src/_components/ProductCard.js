@@ -42,9 +42,9 @@ export const ProductCard = (props) => {
             history.push('/login');
             return;
         }
-
-        if (product.id) {
-            dispatch(productActions.deleteFavorite(product.id));
+        const id = search_type === 'search' ? product.id : product.Product.id;
+        if (id) {
+            dispatch(productActions.deleteFavorite(id));
             setIsFavorite(false);
         }
     }
@@ -107,7 +107,7 @@ export const ProductCard = (props) => {
                             {product.Product.name}
                         </div>
                         {!isFavorite &&
-                        <div className="product-favorite" data-id={product.Product.id} onClick={handleAddFavorite}>
+                        <div className="product-favorite" data-id={product.id} onClick={handleAddFavorite}>
                             <FontAwesomeIcon icon={faHeart} className="product-favorite-icon" color="black" size="2x"/>
                         </div>
                         }

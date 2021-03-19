@@ -39,6 +39,7 @@ export const Header = () => {
             dispatch(productActions.getProducts(search));
         }
     }
+    const products = useSelector(state => state.products);
     const search_started = useSelector(state => state.products.search_started)
     const search_type = useSelector(state => state.products.search_type)
     const loading = useSelector(state => state.products.loading)
@@ -58,13 +59,13 @@ export const Header = () => {
                         </Col>
                         <Col lg={8} md={7} sm={5} xs={12} xl={9} className="header-right mt-2 mt-sm-0 ">
                             <Row className="align-items-center">
-                                <Col lg={8} xs={11} sm={12} md={11} xl={9}
+                                <Col lg={7} xs={11} sm={12} md={11} xl={8}
                                      className="order-sm-1 order-md-0  mt-sm-2 mt-md-0">
                                     <form onSubmit={handleSubmit}>
                                         <div className="inner-form">
                                             <div className="basic-search">
                                                 <div className="input-field">
-                                                    <input id="search" type="text" name="name" defaultValue={search.name} placeholder="Я ищу..."
+                                                    <input id="search" type="text" name="name" defaultValue={products.search_name} placeholder="Я ищу..."
                                                             onChange={handleChange}/>
                                                     <div title="Найти" className="button-search-icon icon-wrap" onClick={handleSubmit}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -78,7 +79,7 @@ export const Header = () => {
                                         </div>
                                     </form>
                                 </Col>
-                                <Col xs={1} sm={12} md={1} lg={4} xl={3}
+                                <Col xs={1} sm={12} md={1} lg={5} xl={4}
                                      className="header-favorite d-flex justify-content-center align-items-center flex-column">
                                     <Link to='/favorite'>
                                         <button className="favorite-button">

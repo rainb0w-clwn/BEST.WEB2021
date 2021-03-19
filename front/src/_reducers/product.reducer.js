@@ -4,6 +4,7 @@ export function products(state = {}, action) {
     switch (action.type) {
         case productConstants.GET_BY_QUERY_REQUEST:
             return {
+                ...state,
                 loading: true,
                 search_type: 'search',
                 search_name: action.products.name || null,
@@ -20,6 +21,7 @@ export function products(state = {}, action) {
                 loading: false,
                 search_started: true,
                 search_type: 'search',
+                search_name: action.products.name || null,
                 page: action.products.page,
                 page_count: action.products.pageCount,
                 categories: action.products.categories,
@@ -31,6 +33,7 @@ export function products(state = {}, action) {
                 loading: false,
                 search_started: true,
                 search_type: 'search',
+                search_name: action.products.name || null,
                 page: action.products.page,
                 page_count: action.products.pageCount,
                 categories: state.categories,

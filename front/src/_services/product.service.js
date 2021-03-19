@@ -23,7 +23,6 @@ function getFavorites() {
     return api.getFavorites().then(res => {
         return res.data;
     }).catch(error =>{
-        console.log(error);
         return Promise.reject();
     });
 }
@@ -53,20 +52,3 @@ function logout() {
     });
 }
 
-
-axios.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    function (error) {
-        const originalRequest = error.config;
-
-        if (
-            (error.response.status === 401
-                && !originalRequest._retry)) {
-            originalRequest._retry = true;
-            return userService.refreshToken();
-        }
-        return Promise.reject(error);
-    }
-);
