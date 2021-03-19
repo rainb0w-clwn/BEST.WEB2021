@@ -13,7 +13,12 @@ export const productActions = {
 function getProducts(userInput) {
     return dispatch => {
         let name = userInput.name ?? null;
-        dispatch(request({ name }));
+        if (userInput.needCategories == 0) {
+            dispatch(request_retry({ name }));
+        } else {
+            dispatch(request({ name }));
+        }
+
         productService.getProducts(userInput)
             .then(
                 products => {
@@ -36,6 +41,7 @@ function getProducts(userInput) {
     function request(products) { return { type: productConstants.GET_BY_QUERY_REQUEST, products } }
     function success(products) { return { type: productConstants.GET_BY_QUERY_SUCCESS, products } }
     function failure(error) { return { type: productConstants.GET_BY_QUERY_FAILURE, error } }
+    function request_retry(products) { return { type: productConstants.GET_BY_QUERY_RETRY_REQUEST, products } }
     function success_retry(products) { return { type: productConstants.GET_BY_QUERY_RETRY_SUCCESS, products } }
     function success_search() { return { type: searchConstants.SEARCH_SET_INPUT_SUCCESS } }
 }

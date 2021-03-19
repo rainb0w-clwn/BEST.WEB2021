@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { userActions } from '../_actions';
+import { productActions } from '../_actions';
 import {Header,ProductDeck} from '../_components';
 
 class Favorite extends React.Component {
@@ -10,13 +10,10 @@ class Favorite extends React.Component {
     //     super(props);
     //     // this.handleLogout = this.handleLogout.bind(this);
     // }
-    // componentDidMount() {
-    //     // this.props.dispatch(userActions.getAll());
-    // }
+    componentDidMount() {
+        this.props.dispatch(productActions.getFavorites())
+    }
 
-    // handleLogout(e) {
-    //     this.props.dispatch(userActions.logout());
-    // }
 
     render() {
         return (

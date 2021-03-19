@@ -2,15 +2,17 @@ import React, {useCallback, useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import {Container, Row, Col, Button} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faHeart, faUser} from "@fortawesome/free-solid-svg-icons";
+import {faHeart, faUser as fasUser} from "@fortawesome/free-solid-svg-icons";
+import {faUser} from "@fortawesome/free-regular-svg-icons";
 import {userActions, productActions, searchActions} from "../_actions";
 import {useDispatch, useSelector} from "react-redux";
 import {searchConstants} from "../_constants";
 import {ProductFilter} from "./ProductFilter";
-import { motion } from "framer-motion"
+import ReactPlaceholder from "react-placeholder";
+import {productPlaceholder, fullPlaceholder} from "../_helpers";
 
 export const Header = () => {
-
+    const [ready, setReady] = useState('');
     const dispatch = useDispatch();
     const debounce = (func, delay) => {
         let debounceTimer;
@@ -22,6 +24,7 @@ export const Header = () => {
                 setTimeout(() => func.apply(context, args), delay);
         }
     }
+    const myPlaceholder = fullPlaceholder()
     const handleChange = debounce(useCallback(e => {
         dispatch({type: searchConstants.SEARCH_SET_INPUT, input: {[e.target.name]: e.target.value}})
     }, [dispatch]), 1);
@@ -36,9 +39,12 @@ export const Header = () => {
             dispatch(productActions.getProducts(search));
         }
     }
-    const products_data = useSelector(state => state.products.products_data)
+    const search_started = useSelector(state => state.products.search_started)
+    const search_type = useSelector(state => state.products.search_type)
+    const loading = useSelector(state => state.products.loading)
 
     return (
+        <React.Fragment>
         <header>
             <div id="header-top-section">
                 <Container fluid>
@@ -74,26 +80,26 @@ export const Header = () => {
                                 </Col>
                                 <Col xs={1} sm={12} md={1} lg={4} xl={3}
                                      className="header-favorite d-flex justify-content-center align-items-center flex-column">
-                                    {user && user.login &&
-                                    <Link to='/login' className="mb-2">
+                                    <Link to='/favorite'>
                                         <button className="favorite-button">
                                     <span className="favorite-text mr-1 align-text-bottom">
-                                       {user.login}
+                                        Список желаний
+                                    </span>
+                                            <FontAwesomeIcon icon={faHeart} size="2x" color="red"/>
+                                        </button>
+                                    </Link>
+                                    {user && user.login &&
+                                    <Link to='/user' className="mt-2">
+                                        <button className="favorite-button">
+                                    <span className="favorite-text mr-1 align-text-bottom">
+                                       {/*{user.login}*/}
+                                        Пользователь
                                     </span>
                                             <FontAwesomeIcon icon={faUser} size="2x" color="black"/>
                                         </button>
                                     </Link>
 
                                     }
-
-                                    <Link to='/favorite'>
-                                        <button className="favorite-button">
-                                    <span className="favorite-text mr-1 align-text-bottom">
-                                        Мой wish-лист
-                                    </span>
-                                            <FontAwesomeIcon icon={faHeart} size="2x" color="red"/>
-                                        </button>
-                                    </Link>
                                 </Col>
                             </Row>
                         </Col>
@@ -102,6 +108,8 @@ export const Header = () => {
             </div>
             <ProductFilter/>
         </header>
+        {loading && !search_started && search_type==='search' && <ReactPlaceholder showLoadingAnimation ready={ready} customPlaceholder={myPlaceholder}/>}
+        </React.Fragment>
     );
 
 }

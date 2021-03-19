@@ -1,9 +1,5 @@
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.bundle'
-import $ from 'jquery';
-import Popper from 'popper.js';
-// import 'bootstrap/dist/js/bootstrap.min.js.map';
 
 import React from 'react';
 import {Router, Route} from 'react-router-dom';
@@ -15,6 +11,7 @@ import {Home} from '../Home';
 import {Login} from '../Login';
 import {Search} from '../Search';
 import {Favorite} from '../Favorite';
+import {User} from '../User';
 import {PrivateRoute} from "../_components";
 
 class App extends React.Component {
@@ -41,6 +38,7 @@ class App extends React.Component {
                                 <Route exact path="/" component={Home}/>
                                 <Route  path="/search" component={Search}/>
                                 <PrivateRoute path="/favorite" component={Favorite}/>
+                                <PrivateRoute path="/user" component={User}/>
                                 <Route path="/login" component={Login}/>
                             </div>
                         </Router>

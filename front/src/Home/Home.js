@@ -9,23 +9,17 @@ class Home extends React.Component {
     //     super(props);
     //     this.handleLogout = this.handleLogout.bind(this);
     // }
-    // componentDidMount() {
-    //     // this.props.dispatch(userActions.getAll());
-    // }
-
-    // handleLogout(e) {
-    //     this.props.dispatch(userActions.logout());
-    // }
-
     render() {
-        const { user, users } = this.props;
+        const { loading, } = this.props;
         return (
             <div>
                 <Header/>
                     <Container fluid>
+                        {!loading &&
                         <div className="home-image-wrapper">
                             <img src="public/home_placeholder.png"/>
                         </div>
+                        }
                     </Container>
 
             </div>
@@ -34,13 +28,11 @@ class Home extends React.Component {
 }
 
 function mapStateToProps(state) {
-    // const { users, auth } = state;
-    // const { user } = auth;
-    // return {
-    //     user,
-    //     users
-    // };
-    return {};
+    const { products } = state;
+    const { loading } = products;
+    return {
+        loading,
+    };
 }
 
 const connectedHome = connect(mapStateToProps)(Home);

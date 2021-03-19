@@ -6,10 +6,9 @@ import {productActions, searchActions, userActions} from "../_actions";
 import $ from 'jquery';
 export const ProductFilter = () => {
     const dispatch = useDispatch();
-    const search_name = useSelector(state => state.search.name) || null;
-    const store_types = useSelector(state => state.products.store_types) || null;
-    const categories = useSelector(state => state.products.categories) || null;
-    const products_data = useSelector(state => state.products.products_data) || null;
+    const search_name = useSelector(state => state.search.name);
+    const store_types = useSelector(state => state.products.store_types);
+    const categories = useSelector(state => state.products.categories);
     const search = useSelector(state => state.search);
 
     function handleChange(e) {
@@ -37,12 +36,11 @@ export const ProductFilter = () => {
             dispatch(productActions.getProducts(search));
         }
     }
-    const loading = useSelector(state => state.loading);
+    const search_started = useSelector(state => state.products.search_started);
     const rating = useSelector(state => state.search.rating) || 0;
-    if (products_data != null) {
         return (
             <React.Fragment>
-                {loading &&
+                {search_started && categories && store_types && categories.length > 0 && store_types.length > 0 &&
                 <div id="header-bottom-section">
                     <div id="product-filters">
                         <Container fluid className="">
@@ -55,7 +53,7 @@ export const ProductFilter = () => {
                                             <div className="dropdown-menu scrollable-menu" role="menu"
                                                  data-display="static">
                                                 <Container className="flex-column">
-                                                    {categories.length > 0 && categories.map((category, index) =>
+                                                    {categories && categories.length > 0 && categories.map((category, index) =>
                                                         <div key={index} className="form-check my-3 dropdown-item">
                                                             <label className="form-check-label">
                                                                 <input type="checkbox" className="form-check-input"
@@ -66,6 +64,11 @@ export const ProductFilter = () => {
                                                             </label>
                                                         </div>
                                                     )}
+                                                    {categories && categories.length == 0 &&
+                                                    <div>
+                                                        Нет подходящих категорий
+                                                    </div>
+                                                    }
                                                 </Container>
 
                                             </div>
@@ -76,7 +79,7 @@ export const ProductFilter = () => {
                                             <div className="dropdown-menu scrollable-menu" role="menu"
                                                  data-display="static">
                                                 <Container className="flex-column">
-                                                    {store_types && store_types.map((store, index) =>
+                                                    {store_types && store_types.length > 0 && store_types.map((store, index) =>
                                                         <div key={index} className="form-check my-3 dropdown-item">
                                                             <label className="form-check-label">
                                                                 <input type="checkbox" className="form-check-input"
@@ -87,6 +90,11 @@ export const ProductFilter = () => {
                                                             </label>
                                                         </div>
                                                     )}
+                                                    {store_types && store_types.length == 0 &&
+                                                        <div>
+                                                            Нет подходящих магазинов
+                                                        </div>
+                                                    }
                                                 </Container>
 
                                             </div>
@@ -145,10 +153,4 @@ export const ProductFilter = () => {
                 }
             </React.Fragment>
         )
-    } else {
-        return (
-            <div>
-            </div>
-        )
-    }
 }

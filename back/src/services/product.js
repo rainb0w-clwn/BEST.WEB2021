@@ -10,33 +10,46 @@ module.exports = class ProductService {
     }
 
     async getProducts(params) {
+        let returning = {};
+        let {page, limit} = params;
+
         let countQuery = this.getCountQuery(params);
         let count = await Models.Product.count(countQuery);
+
+        limit = limit != null && limit <= 72 ? limit : 72;
+        let pageCount = Math.ceil(count/limit);
+        returning.page = page != null && page > 0 ? page : 1;
+        returning.pageCount = pageCount;
+
         let categories = {};
-        let store_type = {};
-        let pageCount = 0;
-        let totalPage = 1;
-        let {needCategories, limit, page} = params;
-        needCategories = needCategories != null ? needCategories : 0
-        if (count !== 0 && needCategories > 0) {
-            limit = limit != null && limit <= 72 ? limit : 72;
-            pageCount = Math.ceil(count/limit);
+        let store_types  = {};
+        let {needCategories} = params;
+
+        needCategories = needCategories != null ? needCategories : null;
+        if (count !== 0 && needCategories) {
             countQuery.attributes = [];
+
             let categoriesCountQuery = countQuery;
             categoriesCountQuery.attributes.push('category');
             categoriesCountQuery.group = 'category';
             categoriesCountQuery.order = [];
             categories = await Models.Product.count(categoriesCountQuery);
+
             countQuery.attributes = [];
             countQuery.attributes.push('store_type');
             countQuery.group = 'store_type';
-            store_type = await Models.Product.count(countQuery);
+            store_types = await Models.Product.count(countQuery);
+
+            returning.categories = categories;
+            returning.store_types = store_types;
         }
-        totalPage = page != null && page > 0 ? page : totalPage;
+        returning.pageCount = pageCount;
+
         let quary = this.getQuery(params);
         let data = await Models.Product.findAll(quary);
+        returning.data = data;
 
-        return {page: totalPage, pageCount: pageCount, categories: categories, store_types: store_type, data: data};
+        return returning;
     }
 
     async getFavorite(userId) {

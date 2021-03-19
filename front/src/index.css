@@ -319,7 +319,7 @@ main .product-header {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 24px;
+  font-size: 20px;
 }
 .product-favorite {
   display: flex;

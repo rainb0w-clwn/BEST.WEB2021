@@ -4,13 +4,22 @@ export function products(state = {}, action) {
     switch (action.type) {
         case productConstants.GET_BY_QUERY_REQUEST:
             return {
+                loading: true,
+                search_type: 'search',
+                search_name: action.products.name || null,
+            };
+        case productConstants.GET_BY_QUERY_RETRY_REQUEST:
+            return {
                 ...state,
                 loading: true,
+                search_type: 'search',
                 search_name: action.products.name || null,
             };
         case productConstants.GET_BY_QUERY_SUCCESS:
             return {
                 loading: false,
+                search_started: true,
+                search_type: 'search',
                 page: action.products.page,
                 page_count: action.products.pageCount,
                 categories: action.products.categories,
@@ -20,6 +29,8 @@ export function products(state = {}, action) {
         case productConstants.GET_BY_QUERY_RETRY_SUCCESS:
             return {
                 loading: false,
+                search_started: true,
+                search_type: 'search',
                 page: action.products.page,
                 page_count: action.products.pageCount,
                 categories: state.categories,
@@ -33,46 +44,44 @@ export function products(state = {}, action) {
         //GET FAVORITES
         case productConstants.GET_FAVORITES_REQUEST:
             return {
+                search_type: 'favorite',
                 loading: true
             };
         case productConstants.GET_FAVORITES_SUCCESS:
             return {
-                ...state,
                 loading: false,
-                favorite: action.products.data,
+                search_type: 'favorite',
+                products_data: action.products.data,
             };
         case productConstants.GET_FAVORITES_FAILURE:
             return {
-                ...state,
                 error: action.error
             };
             //SET FAVORITES
         case productConstants.SET_FAVORITE_REQUEST:
             return {
                 ...state,
-                loading: true
+                favorite_changed: false,
             };
         case productConstants.SET_FAVORITE_SUCCESS:
             return {
-                loading: false,
-                favorite_set: true,
+                ...state,
+                favorite_changed: true,
             };
         case productConstants.SET_FAVORITE_FAILURE:
             return {
-                ...state,
                 error: action.error
             };
             //DELETE FAVORITE
         case productConstants.DELETE_FAVORITE_REQUEST:
             return {
                 ...state,
-                loading: true
+                favorite_changed: false,
             };
         case productConstants.DELETE_FAVORITE_SUCCESS:
             return {
                 ...state,
-                loading: false,
-                favorite_delete: true,
+                favorite_changed: true,
             };
         case productConstants.DELETE_FAVORITE_FAILURE:
             return {
