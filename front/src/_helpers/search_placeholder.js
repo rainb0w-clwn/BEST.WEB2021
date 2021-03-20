@@ -62,6 +62,11 @@ export const fullPlaceholder = () => {
                         <TextBlock rows={1} color='lightgrey'/>
                     </span>
                         </Col>
+                        <Col>
+                    <span>
+                        <TextBlock rows={1} color='lightgrey'/>
+                    </span>
+                        </Col>
                     </div>
                 </div>
                 <div className="product-deck">

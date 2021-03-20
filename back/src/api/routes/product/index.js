@@ -16,10 +16,7 @@ module.exports = (app) => {
                 rating: Joi.number(),
                 priceFrom: Joi.number(),
                 priceTo: Joi.number(),
-                sortBy: Joi.object().keys({
-                    price: Joi.string().valid(...['asc', 'ASC', 'desc', 'DESC']),
-                    rating: Joi.string().valid(...['asc', 'ASC', 'desc', 'DESC']),
-                }),
+                sortBy: Joi.string(),
                 page: Joi.number().integer(),
                 limit: Joi.number().integer(),
                 needCategories: Joi.string(),

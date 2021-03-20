@@ -373,7 +373,7 @@ main .product-header {
 }
 .product-sort-container {
   padding: 8px 15px;
-  width: 250px;
+  width: 500px;
   display: flex;
   flex-direction: row;
   border: 1px solid #d8d3d391;
@@ -391,5 +391,17 @@ main .product-header {
   height: 100%;
   width: 100%;
   vertical-align: middle;
+}
+
+.sort-span {
+  color: grey;
+  text-decoration: underline;
+}
+
+.sort-span:hover {
+  color: #4a4949;
+}
+.dropdown-item {
+  white-space: nowrap!important;
 }
 /**/

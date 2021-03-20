@@ -46,8 +46,7 @@ module.exports = class ProductService {
         returning.pageCount = pageCount;
 
         let quary = this.getQuery(params);
-        let data = await Models.Product.findAll(quary);
-        returning.data = data;
+        returning.data = await Models.Product.findAll(quary);
 
         return returning;
     }
@@ -103,6 +102,8 @@ module.exports = class ProductService {
         }
         // priceTo != null ? whereCondition.price[Op.and][Op.lte] = priceTo : null;
         if (sortBy != null) {
+            sortBy = JSON.parse(sortBy);
+            console.log(sortBy);
             Object.keys(sortBy).forEach((key) => {
                 sortByAllow.includes(key) && ['asc', 'ASC', 'desc', 'DESC'].includes(sortBy[key]) ?
                     data.order.push([key, sortBy[key]]) : null;
