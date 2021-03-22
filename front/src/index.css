@@ -402,6 +402,6 @@ main .product-header {
   color: #4a4949;
 }
 .dropdown-item {
-  white-space: nowrap!important;
+  white-space: inherit!important;
 }
 /**/
